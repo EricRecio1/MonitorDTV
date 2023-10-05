@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>MONITOR</title>
+
+
+   <link rel="stylesheet" href="./Content/font-awesome.min.css" />
+   <link rel="stylesheet" href="./Content/Site.css" />
+   <link rel="stylesheet" href="./Content/bootstrap.min.css" />
+   <link rel="stylesheet" href="./Content/bootstrap-datepicker.min.css" />
+
+   <script src="./Scripts/jquery-3.4.1.min.js"></script>
+   <script src="./Scripts/bootstrap.bundle.min.js"></script>
+   <script src="./Scripts/moment-with-locales.js"></script>
+   <script src="./Scripts/bootstrap-datepicker.min.js"></script>
+
+   <script src="Scripts/Common/Common.js" type="text/javascript"></script>
+   <script src="Scripts/Monitor/Monitor.js" type="text/javascript"></script>
+
+
+</head>
+<body style="border:0px solid; padding-top:0px;">
+
+   <div id="main" class="container mt-0" style="border:0px solid">
+      <!-- Titulo -->
+      <div class="row">
+         <div class="col-lg-1">
+            <div class="text-center">
+               <img class="xxsmall" alt="ocasa" src="images/logo-xx.png" style="height:40px;" />
+            </div>
+         </div>
+         <div class="col-lg-10">
+            <div class="h3 text-center"><span class="text-title" id="Title">Ocasa IT - Job Monitor</span></div>
+         </div>
+         <div class="col-lg-1">
+         </div>
+      </div>
+      <!-- Titulo -->
+      <div class="row">
+         <div class="col-lg-3">
+         </div>
+         <div class="col-lg-6">
+            <div class="h6 text-center" id="message"></div>
+         </div>
+         <div class="col-lg-3">
+            <div class="h6 text-rigth w-100 text-center" id="clock"></div>
+         </div>
+      </div>
+
+      <!-- Cabecera -->
+      <br />
+      <div class="row">
+         <div class="col-lg-3 pt-1">
+
+            <div class="dropdown w-100">
+               <button class="btn btn-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton" 
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="1">
+                       Tipo de mensajes
+               </button>
+               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="typelog">
+                  <span class="dropdown-item cursor-pointer" id="0" onclick="SelectType(0,'Todos')">Todos</span>
+               </div>
+            </div>
+
+         </div>
+         <div class="col-lg-3  pt-1 text-center">
+            <div class="input-group date w-100" id="datepicker">
+               <input type="text" id="fecha" class="form-control pt-10 bg-light" placeholder="Fecha" readonly tabindex="2">
+               <span class="input-group-append">
+                  <span class="input-group-text bg-white">
+                     <i class="fa fa-calendar"></i>
+                  </span>
+               </span>
+            </div>
+         </div>
+         <div class="col-lg-3 pt-1 text-center xsmall">
+            <div data-role="rangeslider">
+               <label for="tInterval" class="xxsmall">Refresco en&nbsp;</label><span id="intervalo" class="xxsmall"></span><br />
+               <input type="range" class="text-primary" name="tInterval" id="tInterval" value="10" min="10" max="600" tabindex="3">
+            </div>
+         </div>
+         <div class="col-lg-3 pt-1">
+            <button id="btnReload" class="btn btn-light small w-100 border border-primary" tabindex="4">Recargar logs</button>
+         </div>
+      </div>
+
+      <!-- Logs -->
+      <br />
+      <div id="contenedor" class="container" style="border:0px solid; overflow:auto; max-height:1000px;">
+         <div id="data" class="p-2"></div>
+      </div>
+
+
+   </div>
+   <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">-->
+   <!--<button type="button" class="btn btn-primary" data-toggle="modal" onclick="PopupDetail('log_detail');">
+      Launch demo modal
+   </button>-->
+
+   <div id="popup_log_detail"></div>
+
+
+   <input id="api" type="hidden" value="" />
+</body>
+</html>

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32602.291
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiLogOcasa", "ApiLogOcasa.csproj", "{FF978ADD-B1CE-4EC3-B47B-9B79F9843290}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "..\Helper\Helper.csproj", "{F43A1EE2-AB15-4BD9-B7D1-4A65E61668D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF978ADD-B1CE-4EC3-B47B-9B79F9843290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF978ADD-B1CE-4EC3-B47B-9B79F9843290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF978ADD-B1CE-4EC3-B47B-9B79F9843290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF978ADD-B1CE-4EC3-B47B-9B79F9843290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F43A1EE2-AB15-4BD9-B7D1-4A65E61668D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F43A1EE2-AB15-4BD9-B7D1-4A65E61668D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F43A1EE2-AB15-4BD9-B7D1-4A65E61668D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F43A1EE2-AB15-4BD9-B7D1-4A65E61668D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3416CD3C-35B2-48BD-B889-04CB7A0E4A5B}
+	EndGlobalSection
+EndGlobal
