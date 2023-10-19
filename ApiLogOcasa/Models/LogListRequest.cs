@@ -10,5 +10,8 @@ namespace ApiLogOcasa.Models
 
         [JsonProperty("fecha")]
         public string fecha { get; set; }
+
+        [JsonProperty("id_aplicacion")]
+        public long id_aplicacion { get; set; }
     }
 }

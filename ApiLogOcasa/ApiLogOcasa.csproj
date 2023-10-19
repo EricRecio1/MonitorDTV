@@ -152,12 +152,14 @@
     <Compile Include="Controllers\AddLogController.cs" />
     <Compile Include="Controllers\AddServerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ListApplicationsController.cs" />
     <Compile Include="Controllers\ListLogDetailController.cs" />
     <Compile Include="Controllers\ListLogsController.cs" />
     <Compile Include="Controllers\ListTypesLogController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Application.cs" />
     <Compile Include="Models\ApplicationRequest.cs" />
     <Compile Include="Models\Log.cs" />
     <Compile Include="Models\LogDetailRequest.cs" />
@@ -209,6 +211,7 @@
     <Folder Include="Views\AddApplication\" />
     <Folder Include="Views\AddLog\" />
     <Folder Include="Views\AddServer\" />
+    <Folder Include="Views\ListApplications\" />
     <Folder Include="Views\ListLogDetail\" />
     <Folder Include="Views\ListLogs\" />
   </ItemGroup>

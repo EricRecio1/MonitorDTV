@@ -11,11 +11,13 @@
    <link rel="stylesheet" href="./Content/Site.css" />
    <link rel="stylesheet" href="./Content/bootstrap.min.css" />
    <link rel="stylesheet" href="./Content/bootstrap-datepicker.min.css" />
+   <link rel="stylesheet" href="./Content/bootstrap-combobox.min.css" />
 
    <script src="./Scripts/jquery-3.4.1.min.js"></script>
    <script src="./Scripts/bootstrap.bundle.min.js"></script>
    <script src="./Scripts/moment-with-locales.js"></script>
    <script src="./Scripts/bootstrap-datepicker.min.js"></script>
+   <script src="./Scripts/bootstrap-combobox.min.js"></script>
 
    <script src="Scripts/Common/Common.js" type="text/javascript"></script>
    <script src="Scripts/Monitor/Monitor.js" type="text/javascript"></script>
@@ -56,9 +58,9 @@
          <div class="col-lg-3 pt-1">
 
             <div class="dropdown w-100">
-               <button class="btn btn-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton" 
+               <button class="btn btn-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="1">
-                       Tipo de mensajes
+                  Tipo de mensajes
                </button>
                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="typelog">
                   <span class="dropdown-item cursor-pointer" id="0" onclick="SelectType(0,'Todos')">Todos</span>
@@ -66,7 +68,13 @@
             </div>
 
          </div>
-         <div class="col-lg-3  pt-1 text-center">
+         <div class="col-lg-3 pt-1">
+
+            <select class="form-control" id="combo_app">                              
+            </select>
+
+         </div>
+         <div class="col-lg-2  pt-1 text-center">
             <div class="input-group date w-100" id="datepicker">
                <input type="text" id="fecha" class="form-control pt-10 bg-light" placeholder="Fecha" readonly tabindex="2">
                <span class="input-group-append">
@@ -76,25 +84,27 @@
                </span>
             </div>
          </div>
-         <div class="col-lg-3 pt-1 text-center xsmall">
+
+         <div class="col-lg-2 pt-1 text-center xsmall">
             <div data-role="rangeslider">
                <label for="tInterval" class="xxsmall">Refresco en&nbsp;</label><span id="intervalo" class="xxsmall"></span><br />
                <input type="range" class="text-primary" name="tInterval" id="tInterval" value="10" min="10" max="600" tabindex="3">
             </div>
          </div>
-         <div class="col-lg-3 pt-1">
+
+         <div class="col-lg-2 pt-1">
             <button id="btnReload" class="btn btn-light small w-100 border border-primary" tabindex="4">Recargar logs</button>
          </div>
+         </div>
+
+         <!-- Logs -->
+         <br />
+         <div id="contenedor" class="container" style="border:0px solid; overflow:auto; max-height:1000px;">
+            <div id="data" class="p-2"></div>
+         </div>
+
+
       </div>
-
-      <!-- Logs -->
-      <br />
-      <div id="contenedor" class="container" style="border:0px solid; overflow:auto; max-height:1000px;">
-         <div id="data" class="p-2"></div>
-      </div>
-
-
-   </div>
    <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">-->
    <!--<button type="button" class="btn btn-primary" data-toggle="modal" onclick="PopupDetail('log_detail');">
       Launch demo modal

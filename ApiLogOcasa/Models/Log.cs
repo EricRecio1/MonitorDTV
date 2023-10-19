@@ -41,6 +41,11 @@ namespace ApiLogOcasa.Models
         [JsonProperty("codigo_agrupador", NullValueHandling = NullValueHandling.Ignore)]
         public string codigo_agrupador { get; set; }
 
-        
+        [JsonProperty("id_estado_log", NullValueHandling = NullValueHandling.Ignore)]
+        public int id_estado_log { get; set; }
+
+        [JsonProperty("descripcion_estado", NullValueHandling = NullValueHandling.Ignore)]
+        public string descripcion_estado { get; set; }
+
     }
 }
