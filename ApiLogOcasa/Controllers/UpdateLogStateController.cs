@@ -7,11 +7,12 @@ using System.Web.Http.Cors;
 
 namespace ApiLogOcasa.Controllers
 {
-    [EnableCors(origins: "https://localhost:44351", headers: "*", methods: "*")]
+    [EnableCors(origins: "https://localhost:44351,https://localhost:443", headers: "*", methods: "*")]
     public class UpdateLogStateController : ApiController
     {
 
         [Route("api/UpdateLogState")]
+        [HttpPatch]
         public HttpResponseMessage UpdateLogState(UpdateLogStateRequest param)
         {
             HttpRequestMessage request = this.ActionContext.Request;

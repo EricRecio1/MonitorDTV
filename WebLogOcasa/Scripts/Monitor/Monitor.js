@@ -5,13 +5,15 @@ var url_api_logs = 'https://localhost/apilog/api/ListLogs';
 var url_api_logtype = 'https://localhost/apilog/api/ListTypesLog';
 var url_api_logs_detail = 'https://localhost/apilog/api/ListLogDetail';
 var url_api_apps = 'https://localhost/apilog/api/ListApplication';
+var url_api_update_state = 'https://localhost/apilog/api/UpdateLogState';
 
 // DEVELOP
 /*
 var url_api_logs = 'https://localhost:44361/api/ListLogs';
 var url_api_logtype = 'https://localhost:44361/api/ListTypesLog';
 var url_api_logs_detail = 'https://localhost:44361/api/ListLogDetail';
-var url_api_apps = 'https://localhost/apilog/api/ListApplication';
+var url_api_apps = 'https://localhost:44361/api/ListApplication';
+var url_api_apps = 'https://localhost:44361/api/UpdateLogState';
 */
 
 var today = new Date();
@@ -433,7 +435,8 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
          var group_code = '';
          var log_type = '';
          var id_estado_log = '';
-         var descripcion_estado=''
+         var descripcion_estado = '';
+         var clave_estado = '';
 
          //if (data.items.length > 0) {
          //   html_row = '<br/>';
@@ -468,7 +471,8 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
                log_type = '';
 
                id_estado_log = data.items[index].id_estado_log;
-               descripcion_estado = data.items[index].descripcion_estado
+               descripcion_estado = data.items[index].descripcion_estado_log;
+               clave_estado = data.items[index].clave_estado_log;
 
                color = 'text-info';
 
@@ -499,7 +503,8 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
                html_row += '</div>';
 
                html_row += '<div class="col-sm-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span id="lbl_'+id+'" class="xxsmall text-dark">Pendiente</span><br/><input type="checkbox"/ id="log_'+id+'" onclick="ChangeStateLog(this,'+id+');">';
+               html_row += '     <span id="lbl_' + id + '" class="xxsmall text-dark">' + Get_legend_status(clave_estado) + '</span><br/>';
+               html_row += '     <input type="checkbox"/ id="log_' + id + '" onclick="ChangeStateLog(this,' + id + ',\'' +clave_estado +'\');" ' + (Get_check_status(clave_estado) ?'checked':'') + '>';
                html_row += '</div>';
                //html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
                //html_row += '     <span ' + (level == 3 ? 'class="blink"' : '') + ' >' + critical + '<span>';
@@ -687,17 +692,41 @@ function LoadLogType() {
 
 }
 
-function ChangeStateLog(control, id) {
-   if ($(control).is(':checked')) {
-      //alert(id + ' seleccionado');
-      $('#lbl_' + id).text('Finalizado');
+function ChangeStateLog(control, id, clave_estado) {
 
-   }
-   else {
-      //alert(id + ' sin seleccion');
-      $('#lbl_' + id).text('Pendiente');
+   var nueva_clave = Get_alternate_status(clave_estado);
 
-   }
+   $.ajax({
+      type: 'PATCH',
+      contentType: 'application/json; charset=utf-8',
+      url: url_api_update_state,
+      data: JSON.stringify({
+         'id_log': id,
+         'clave_estado': nueva_clave
+      }),
+      dataType: "json"
+   }).done(function (data) {
+      if (data != "") {
+         let exists = Object.keys(data).includes('response');
+         if (exists) {
+
+            if ($(control).is(':checked')) {
+               //alert(id + ' seleccionado');
+               $('#lbl_' + id).text('Finalizado');
+            }
+            else {
+               //alert(id + ' sin seleccion');
+               $('#lbl_' + id).text('Pendiente');
+            }
+         }
+      }
+   }).fail(function (fail) {
+      PopupDetail('popup_message', 'No fue posible actualizar el estado del log ' + id, 'data-detail', 'sm');
+      
+   });
+
+
+
 
    
 }
@@ -807,5 +836,47 @@ function Get_legend_interval(interval) {
 
    
    return html;
+}
+
+function Get_legend_status(key) {
+   var desc = '';
+   switch (key) {
+      case 'PEND':
+         desc = 'Pendiente';
+         break;
+      case 'REVI':
+         desc = 'Revisión';
+         break;
+      case 'SOLU':
+         desc = 'Solucionado';
+         break;
+   }
+   return desc;
+}
+
+function Get_alternate_status(key) {
+   var newkey = '';
+   switch (key) {
+      case 'PEND':
+      case 'REVI':
+         newkey = 'SOLU';
+         break;
+      case 'SOLU':
+         newkey = 'PEND';
+         break;
+   }
+   return newkey;
+}
+function Get_check_status(key) {
+
+   switch (key) {
+      case 'PEND':
+         return false;
+         break;
+      case 'REVI':         
+      case 'SOLU':
+         return true;
+         break;
+   }
 }
 
