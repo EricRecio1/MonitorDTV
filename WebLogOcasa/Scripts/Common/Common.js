@@ -1,4 +1,4 @@
-﻿const { Modal } = require("bootstrap");
+﻿//const { Modal } = require("bootstrap");
 
 
 function PopupDetail(popup_control_id,title,data_detail_control_id,modal_size) {

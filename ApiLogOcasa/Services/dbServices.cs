@@ -217,8 +217,9 @@ namespace ApiLogOcasa
                             descripcion_error = (dr["descripcion_error"] ?? "").ToString(),                            
                             descripcion_paquete = (dr["descripcion_paquete"] ?? "").ToString(),
                             descripcion_respuesta = (dr["descripcion_respuesta"] ?? "").ToString(),
-                            id_estado_log = Convert.ToInt32((dr["id_estado_log"] ?? "").ToString()),
-                            descripcion_estado = (dr["descripcion_estado"]).ToString()
+                            id_estado_log = Convert.ToInt32((dr["id_estado"] ?? "").ToString()),
+                            clave_estado_log = (dr["clave_estado"]).ToString(),
+                            descripcion_estado_log = (dr["descripcion_estado"]).ToString()
                             
 
                         }).ToList();

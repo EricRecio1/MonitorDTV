@@ -495,11 +495,11 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
                html_row += '</div>';
 
                html_row += '<div class="col-md-2 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">ORIGEN:</span><br/><span>' + descripcion_estado + '<span>';
+               html_row += '     <span class="xxsmall text-dark">ESTADO:</span><br/><span>' + descripcion_estado + '<span>';
                html_row += '</div>';
 
                html_row += '<div class="col-sm-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">Revisado</span><br/><input type="checkbox"/ id="log_'+id+'" onclick="ChangeStateLog(this,'+id+');">';
+               html_row += '     <span id="lbl_'+id+'" class="xxsmall text-dark">Pendiente</span><br/><input type="checkbox"/ id="log_'+id+'" onclick="ChangeStateLog(this,'+id+');">';
                html_row += '</div>';
                //html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
                //html_row += '     <span ' + (level == 3 ? 'class="blink"' : '') + ' >' + critical + '<span>';
@@ -686,11 +686,19 @@ function LoadLogType() {
    });
 
 }
-function ChangeStateLog(control,id) {
-   if ($(control).is(':checked'))
-      alert(id + ' seleccionado');
-   else
-      alert(id + ' sin seleccion');
+
+function ChangeStateLog(control, id) {
+   if ($(control).is(':checked')) {
+      //alert(id + ' seleccionado');
+      $('#lbl_' + id).text('Finalizado');
+
+   }
+   else {
+      //alert(id + ' sin seleccion');
+      $('#lbl_' + id).text('Pendiente');
+
+   }
+
    
 }
 function ShowClock() {

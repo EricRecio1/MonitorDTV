@@ -156,6 +156,7 @@
     <Compile Include="Controllers\ListLogDetailController.cs" />
     <Compile Include="Controllers\ListLogsController.cs" />
     <Compile Include="Controllers\ListTypesLogController.cs" />
+    <Compile Include="Controllers\UpdateLogStateController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -173,6 +174,7 @@
     <Compile Include="Models\LogType.cs" />
     <Compile Include="Models\LogTypeList.cs" />
     <Compile Include="Models\Records.cs" />
+    <Compile Include="Models\UpdateLogStateRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\dbServices.cs" />
   </ItemGroup>
@@ -214,6 +216,7 @@
     <Folder Include="Views\ListApplications\" />
     <Folder Include="Views\ListLogDetail\" />
     <Folder Include="Views\ListLogs\" />
+    <Folder Include="Views\UpdateLogState\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

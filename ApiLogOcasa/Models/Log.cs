@@ -44,8 +44,11 @@ namespace ApiLogOcasa.Models
         [JsonProperty("id_estado_log", NullValueHandling = NullValueHandling.Ignore)]
         public int id_estado_log { get; set; }
 
-        [JsonProperty("descripcion_estado", NullValueHandling = NullValueHandling.Ignore)]
-        public string descripcion_estado { get; set; }
+        [JsonProperty("clave_estado_log", NullValueHandling = NullValueHandling.Ignore)]
+        public string clave_estado_log { get; set; }
+
+        [JsonProperty("descripcion_estado_log", NullValueHandling = NullValueHandling.Ignore)]
+        public string descripcion_estado_log { get; set; }
 
     }
 }
