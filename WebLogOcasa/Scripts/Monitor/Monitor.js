@@ -842,16 +842,20 @@ function Get_legend_status(key) {
    var desc = '';
    switch (key) {
       case 'PEND':
-         desc = 'Pendiente';
+         desc = Get_legend_html_colored('Pendiente','#ff0000');
          break;
       case 'REVI':
-         desc = 'Revisión';
+         desc = Get_legend_html_colored('Revisión','#ffccff');
          break;
       case 'SOLU':
-         desc = 'Solucionado';
+         desc = Get_legend_html_colored('Solucionado','#00ff00');
          break;
    }
    return desc;
+}
+
+function Get_legend_html_colored(text,color) {
+   return '<span style="color:'+color+'">'+text+'</span>'
 }
 
 function Get_alternate_status(key) {
