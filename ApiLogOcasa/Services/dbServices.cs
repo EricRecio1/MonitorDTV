@@ -216,7 +216,10 @@ namespace ApiLogOcasa
                             procedencia = (dr["procedencia"].ToString() ?? ""),
                             descripcion_error = (dr["descripcion_error"] ?? "").ToString(),                            
                             descripcion_paquete = (dr["descripcion_paquete"] ?? "").ToString(),
-                            descripcion_respuesta = (dr["descripcion_respuesta"] ?? "").ToString()
+                            descripcion_respuesta = (dr["descripcion_respuesta"] ?? "").ToString(),
+                            id_estado_log = Convert.ToInt32((dr["id_estado"] ?? "").ToString()),
+                            clave_estado_log = (dr["clave_estado"]).ToString(),
+                            descripcion_estado_log = (dr["descripcion_estado"]).ToString()
                             
 
                         }).ToList();
@@ -272,5 +275,57 @@ namespace ApiLogOcasa
             return records;
         }
         
+        public Records<Application> ListApplications(StoredProcedure storedprocedure)
+        {
+            Records<Application> records = new Records<Application>();
+            List<Application> list = new List<Application>();
+            try
+            {
+                Connection();
+                SqlCommand com = new SqlCommand(storedprocedure.name, _Con);
+
+                if (storedprocedure.parameters != null)
+                {
+                    foreach (StoredProcedureParameters param in storedprocedure.parameters)
+                    {
+                        com.Parameters.Add(param.name, param.type).Value = param.value;
+                    }
+                }
+                com.CommandType = CommandType.StoredProcedure;
+                SqlDataAdapter da = new SqlDataAdapter(com);
+
+                DataTable dt = new DataTable();
+                _Con.Open();
+                da.Fill(dt);
+                _Con.Close();
+
+                list = (from DataRow dr in dt.Rows
+                        select new Application()
+                        {
+                            id = int.Parse(Convert.ToString(dr["id"] ?? "").ToString()),
+                            nombre = Convert.ToString(dr["nombre"] ?? ""),
+                            fecha_alta = Convert.ToString(dr["fecha_alta"] ?? ""),
+                            fecha_creacion = Convert.ToString(dr["fecha_creacion"] ?? ""),
+                            activo = Convert.ToBoolean(dr["activo"]??false),
+                            descripcion = Convert.ToString(dr["descripcion"] ?? ""),
+                            especificacion = Convert.ToString(dr["especificaciones"] != DBNull.Value ? dr["especificaciones"] : ""),
+                            url_git = Convert.ToString(dr["url_git"] ?? ""),
+                            url_documentos = Convert.ToString(dr["url_documentos"] != DBNull.Value ? dr["url_documentos"] : ""),
+                            id_servidor = Convert.ToInt64(dr["id_servidor"] != DBNull.Value ? dr["id_servidor"] : 0),
+                            id_cliente = Convert.ToInt32(dr["id_cliente"] != DBNull.Value ? dr["id_cliente"]: 0),
+                            max_mensajes_error = Convert.ToInt32(dr["max_mensajes_error"] != DBNull.Value ? dr["max_mensajes_error"] : 0)
+
+                        }).ToList();
+                records.items = list;
+                records.count = list.Count();
+
+            }
+            catch (Exception ex)
+            {
+                if (_Con.State == ConnectionState.Open) _Con.Close();
+                error_message = ex.Message;
+            }
+            return records;
+        }
     }
 }

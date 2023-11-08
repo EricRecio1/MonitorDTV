@@ -8,29 +8,28 @@ using System.Web.Http.Cors;
 namespace ApiLogOcasa.Controllers
 {
     [EnableCors(origins: "https://localhost:44351,https://localhost:443", headers: "*", methods: "*")]
-    public class AddServerController : ApiController
+
+    public class ListApplicationsController : ApiController
     {
-        [Route("api/AddServer")]
-        public HttpResponseMessage AddServer(ServerRequest param)
+
+        [HttpGet]
+        [Route("api/ListApplication")]
+        public HttpResponseMessage ListApplication()
         {
             HttpRequestMessage request = this.ActionContext.Request;
-            GenericResponse ret;
+            Records<Application> records = new Records<Application>();
+            GenericResponse ret = new GenericResponse();
 
             try
             {
-                // 1. Verificar estructura de param
-
-
-                // 2. Insertar 
                 dbServices db = new dbServices();
-                ret = db.Save(new StoredProcedure()
+                records = db.ListApplications(new StoredProcedure()
                 {
-                    name = "Monitor_AgregarServidor",
-                    parameters = AddParamenters(param)
+                    name = "Monitor_ListarAplicacion",
+                    parameters = null
                 });
 
-
-                return request.CreateResponse(System.Net.HttpStatusCode.OK, ret);
+                return (request.CreateResponse(System.Net.HttpStatusCode.OK, records));
 
             }
             catch (Exception ex)
@@ -38,14 +37,12 @@ namespace ApiLogOcasa.Controllers
                 ret = new GenericResponse()
                 {
                     response = "Error",
-                    description = ex.Message,
-                    operation = false
+                    description = ex.Message
                 };
-                return request.CreateResponse(System.Net.HttpStatusCode.BadRequest, ret);
+                return (request.CreateResponse(System.Net.HttpStatusCode.BadRequest, ret));
             }
 
         }
-
 
         private List<StoredProcedureParameters> AddParamenters(ServerRequest param)
         {
@@ -96,7 +93,7 @@ namespace ApiLogOcasa.Controllers
 
                 throw new Exception("Error en la estructura de parámetros");
             }
-            
+
 
         }
 

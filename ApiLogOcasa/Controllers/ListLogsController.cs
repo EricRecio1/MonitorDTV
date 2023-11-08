@@ -67,6 +67,13 @@ namespace ApiLogOcasa.Controllers
                               type=System.Data.SqlDbType.DateTime,
                               value= (log.fecha =="" ? DateTime.Parse("1900-01-01").ToString(): log.fecha)
                          }
+                         ,
+                         new StoredProcedureParameters()
+                         {
+                             name="@id_aplicacion",
+                              type=System.Data.SqlDbType.BigInt,
+                              value=(log.id_aplicacion.ToString() ?? DBNull.Value.ToString())
+                         }
                      });
 
         }

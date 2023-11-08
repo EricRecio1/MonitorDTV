@@ -4,11 +4,17 @@
 var url_api_logs = 'https://localhost/apilog/api/ListLogs';
 var url_api_logtype = 'https://localhost/apilog/api/ListTypesLog';
 var url_api_logs_detail = 'https://localhost/apilog/api/ListLogDetail';
+var url_api_apps = 'https://localhost/apilog/api/ListApplication';
+var url_api_update_state = 'https://localhost/apilog/api/UpdateLogState';
 
 // DEVELOP
-//var url_api_logs = 'https://localhost:44361/api/ListLogs';
-//var url_api_logtype = 'https://localhost:44361/api/ListTypesLog';
-//var url_api_logs_detail = 'https://localhost:44361/api/ListLogDetail';
+/*
+var url_api_logs = 'https://localhost:44361/api/ListLogs';
+var url_api_logtype = 'https://localhost:44361/api/ListTypesLog';
+var url_api_logs_detail = 'https://localhost:44361/api/ListLogDetail';
+var url_api_apps = 'https://localhost:44361/api/ListApplication';
+var url_api_apps = 'https://localhost:44361/api/UpdateLogState';
+*/
 
 var today = new Date();
 
@@ -23,6 +29,7 @@ let formattedDateSQL = yyyy + '-' + MM + '-' + dd;
 let formattedDateScreen = pad(2, dd, '0') + '/' + pad(2, MM, '0') + '/' + yyyy;
 let formattedTimeScreen = pad(2, hh, '0') + ':' + pad(2, mm, '0') + ':' + pad(2, ss, '0');
 let type_option = 0;
+let id_application = 0;
 let refresh_interval = 10;  // En segundos
 let refresh_clock_interval = 1; // En segundos
 
@@ -63,9 +70,10 @@ $(function () {
 function InitializeControls() {
 
    LoadLogType();
-   LoadLogs(type_option);
+   LoadApps();
+   LoadLogs(type_option, id_application);
    // Setea el intervalo para la consulta del log
-   idLogInterval=setInterval(LoadLogs, refresh_interval * 1000, type_option);
+   idLogInterval=setInterval(LoadLogs, refresh_interval * 1000, type_option, id_application);
    // Setea el intervalo para la consulta del reloj
    idClockInterval=setInterval(ShowClock, refresh_clock_interval * 1000);
    
@@ -74,11 +82,11 @@ function InitializeControls() {
    $('#intervalo').html(interval_legend);
 
    $('#btnReload').click(function () {
-      LoadLogs(type_option);
+      LoadLogs(type_option,id_application);
    });
    $('#datepicker').change(function (e) {
       SetDateToSearch($('#fecha').val());
-      LoadLogs(type_option);
+      LoadLogs(type_option,id_application);
       
    });
   
@@ -90,20 +98,31 @@ function InitializeControls() {
       $('#intervalo').html(interval_legend);
 
       clearInterval(idLogInterval);
-      idLogInterval=setInterval(LoadLogs, refresh_interval * 1000, type_option);
+      idLogInterval=setInterval(LoadLogs, refresh_interval * 1000, type_option, id_application);
    });
    $('#tInterval').on('input', function () {
       refresh_interval = this.value;
       interval_legend = Get_legend_interval(refresh_interval);
       $('#intervalo').html(interval_legend);
    });
+
+   $('.combobox').combobox();
+
+   // bonus: add a placeholder
+   $('.combobox').attr('placeholder', 'Nombre aplicación');
+   $('#combo_app').change(function () {
+
+      let id_app = $("#combo_app option:selected").val();
+      LoadLogs(type_option, id_app);
+
+   });
 }
 
-function LoadLogs(id) {
+function LoadLogs(id_logtype,id_app) {
 
    var html = '';
    // Obtiene los valores de los parámetros
-   var id_tipo_log = (type_option !== id && type_option !== undefined ? type_option:id);
+   var id_logtype = (type_option !== id_logtype && type_option !== undefined ? type_option:id_logtype);
    var date = $('#fecha').val();
    
   
@@ -116,8 +135,8 @@ function LoadLogs(id) {
       datesql = year + '-' + month + '-' + day;
    }
 
-   if (id_tipo_log === '' || id_tipo_log === undefined)
-      id_tipo_log = 0;
+   if (id_logtype === '' || id_logtype === undefined)
+      id_logtype = 0;
 
    html = GetHtmlSpinner();
    $('#data').html(html);
@@ -129,8 +148,9 @@ function LoadLogs(id) {
       contentType: 'application/json; charset=utf-8',
       url: url_api_logs,
       data: JSON.stringify({
-         'id_tipo_log': id_tipo_log,
-         'fecha': datesql
+         'id_tipo_log': id_logtype,
+         'fecha': datesql,
+         'id_aplicacion': id_app
       }),
       dataType: "json"
    }).done(function (data) {
@@ -414,6 +434,9 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
          var response_description = '';
          var group_code = '';
          var log_type = '';
+         var id_estado_log = '';
+         var descripcion_estado = '';
+         var clave_estado = '';
 
          //if (data.items.length > 0) {
          //   html_row = '<br/>';
@@ -447,6 +470,10 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
                group_code = data.items[index].codigo_agrupador;
                log_type = '';
 
+               id_estado_log = data.items[index].id_estado_log;
+               descripcion_estado = data.items[index].descripcion_estado_log;
+               clave_estado = data.items[index].clave_estado_log;
+
                color = 'text-info';
 
                //if (level === 1) color = 'text-info';
@@ -463,14 +490,22 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
                //html_row += '     <span>' + date + '<span>';
                //html_row += '</div>';
 
-               html_row += '<div class="col-md-8 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
+               html_row += '<div class="col-md-7 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
                html_row += '     <span class="xxsmall text-dark">DESCRIPCION:</span><br/><span>' + error_description + '<span>';
                html_row += '</div>';
 
-               html_row += '<div class="col-md-3 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
+               html_row += '<div class="col-md-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
                html_row += '     <span class="xxsmall text-dark">ORIGEN:</span><br/><span>' + source + '<span>';
                html_row += '</div>';
 
+               html_row += '<div class="col-md-2 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
+               html_row += '     <span class="xxsmall text-dark">ESTADO:</span><br/><span>' + descripcion_estado + '<span>';
+               html_row += '</div>';
+
+               html_row += '<div class="col-sm-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
+               html_row += '     <span id="lbl_' + id + '" class="xxsmall text-dark">' + Get_legend_status(clave_estado) + '</span><br/>';
+               html_row += '     <input type="checkbox"/ id="log_' + id + '" onclick="ChangeStateLog(this,' + id + ',\'' +clave_estado +'\');" ' + (Get_check_status(clave_estado) ?'checked':'') + '>';
+               html_row += '</div>';
                //html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
                //html_row += '     <span ' + (level == 3 ? 'class="blink"' : '') + ' >' + critical + '<span>';
                //html_row += '</div>';
@@ -530,6 +565,66 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
 
 }
 
+function LoadApps() {
+   var a = '';
+
+   $.ajax({
+      type: 'GET',
+      contentType: 'application/json; charset=utf-8',
+      url: url_api_apps,
+      //data: JSON.stringify({
+      //   'id_tipo_log': id_tipo_log,
+      //   'fecha': fecha
+      //}),
+      dataType: "json"
+   }).done(function (data) {
+
+      if (data != "") {
+
+         $('#combo_app').empty();
+
+         /*var records = JSON.parse(data);*/
+         var index = 0;
+         var records_count = 0;
+         //var cantidad_columnas = CANT_COLUMNAS + 1;  // Para forzar la primer fila
+         var html_row = '';
+         /* var color = '';*/
+
+         var id = '';
+         var nombre = '';
+
+         //var ciclos = 0;
+         records_count = data.count;
+
+         while (index < data.items.length) {
+
+            records_count++;
+            if (index == 0)
+               html_row += '<option value="0">Todas las aplicaciones</option>';
+            id = data.items[index].id;
+            nombre = data.items[index].nombre;
+
+            html_row += '<option value="' + id +'">'+nombre+'</option>';
+
+            index++;
+
+         }
+
+         $('#combo_app').html(html_row);
+
+
+
+
+      } else {
+         $('#combo_app').empty();
+
+      }
+
+   }).fail(function (d) {
+
+      $('#message').html('<span class="text-danger blink">falla en la conexión aplicaciones</span>');
+   });
+}
 function LoadLogType() {
 
    var a = '';
@@ -597,6 +692,44 @@ function LoadLogType() {
 
 }
 
+function ChangeStateLog(control, id, clave_estado) {
+
+   var nueva_clave = Get_alternate_status(clave_estado);
+
+   $.ajax({
+      type: 'PATCH',
+      contentType: 'application/json; charset=utf-8',
+      url: url_api_update_state,
+      data: JSON.stringify({
+         'id_log': id,
+         'clave_estado': nueva_clave
+      }),
+      dataType: "json"
+   }).done(function (data) {
+      if (data != "") {
+         let exists = Object.keys(data).includes('response');
+         if (exists) {
+
+            if ($(control).is(':checked')) {
+               //alert(id + ' seleccionado');
+               $('#lbl_' + id).text('Finalizado');
+            }
+            else {
+               //alert(id + ' sin seleccion');
+               $('#lbl_' + id).text('Pendiente');
+            }
+         }
+      }
+   }).fail(function (fail) {
+      PopupDetail('popup_message', 'No fue posible actualizar el estado del log ' + id, 'data-detail', 'sm');
+      
+   });
+
+
+
+
+   
+}
 function ShowClock() {
 
    var today = new Date();
@@ -675,7 +808,7 @@ function ShowLogsDetails(app_id, name, date, id_log_type, search) {
    LoadLogsDetail(app_id, datesql, id_log_type, search)
 
    // Llamada al popup de la Common.js
-   PopupDetail('popup_log_detail', 'Detalle de logueos de ' + name, 'data-detail');
+   PopupDetail('popup_log_detail', 'Detalle de logueos de ' + name, 'data-detail','xl');
 }
 
 function GetHtmlSpinner() {
@@ -703,5 +836,51 @@ function Get_legend_interval(interval) {
 
    
    return html;
+}
+
+function Get_legend_status(key) {
+   var desc = '';
+   switch (key) {
+      case 'PEND':
+         desc = Get_legend_html_colored('Pendiente','#ff0000');
+         break;
+      case 'REVI':
+         desc = Get_legend_html_colored('Revisión','#ffccff');
+         break;
+      case 'SOLU':
+         desc = Get_legend_html_colored('Solucionado','#00ff00');
+         break;
+   }
+   return desc;
+}
+
+function Get_legend_html_colored(text,color) {
+   return '<span style="color:'+color+'">'+text+'</span>'
+}
+
+function Get_alternate_status(key) {
+   var newkey = '';
+   switch (key) {
+      case 'PEND':
+      case 'REVI':
+         newkey = 'SOLU';
+         break;
+      case 'SOLU':
+         newkey = 'PEND';
+         break;
+   }
+   return newkey;
+}
+function Get_check_status(key) {
+
+   switch (key) {
+      case 'PEND':
+         return false;
+         break;
+      case 'REVI':         
+      case 'SOLU':
+         return true;
+         break;
+   }
 }
 
