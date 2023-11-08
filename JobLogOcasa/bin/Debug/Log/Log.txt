@@ -1,0 +1,6 @@
+INFO  2023-09-22 16:27:20,287 e  1741ms Program                Main               - 
+INFO  2023-09-22 16:27:21,040 e  2494ms Program                Main               - 
+INFO  2023-09-22 16:27:21,408 e  2862ms Program                Main               - 
+INFO  2023-09-22 16:39:34,110 e 238396ms Program                Main               - Se ejecutó correctamente Citaciones
+INFO  2023-09-22 16:39:36,306 e 240592ms Program                Main               - Se ejecutó correctamente Nocnoc
+INFO  2023-09-22 16:39:37,103 e 241389ms Program                Main               - Se ejecutó correctamente Marken
