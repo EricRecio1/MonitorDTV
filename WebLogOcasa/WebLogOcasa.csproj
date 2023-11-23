@@ -153,6 +153,7 @@
     <Content Include="images\logo-xx.png" />
     <Content Include="images\ocasa.png" />
     <Content Include="Monitor.htm" />
+    <Content Include="Scripts\Apps\Nocnoc\NocnocBuilder.js" />
     <Content Include="Scripts\bootstrap-combobox.min.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
