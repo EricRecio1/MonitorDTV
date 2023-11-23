@@ -259,6 +259,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Scripts\Apps\" />
     <Folder Include="Scripts_Controlers\" />
   </ItemGroup>
   <ItemGroup>

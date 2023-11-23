@@ -1,5 +1,6 @@
 ﻿// V a r i a b l e s    p u b l i c a s
 
+
 // PRD
 var url_api_logs = 'https://localhost/apilog/api/ListLogs';
 var url_api_logtype = 'https://localhost/apilog/api/ListTypesLog';
@@ -38,10 +39,15 @@ let interval_legend = '';
 let idLogInterval = 0;
 let idClockInterval = 0;
 
+const records = [];
+
 SetDateToSearch(dd+'/'+mm+'/'+yyyy);
+
+
 
 $(document).ready(function () {
    InitializeControls();
+   
 });
 
 // F U N C I O N E S 
@@ -71,9 +77,9 @@ function InitializeControls() {
 
    LoadLogType();
    LoadApps();
-   LoadLogs(type_option, id_application);
+   LoadLogs();
    // Setea el intervalo para la consulta del log
-   idLogInterval=setInterval(LoadLogs, refresh_interval * 1000, type_option, id_application);
+   idLogInterval=setInterval(LoadLogs, refresh_interval * 1000);
    // Setea el intervalo para la consulta del reloj
    idClockInterval=setInterval(ShowClock, refresh_clock_interval * 1000);
    
@@ -81,12 +87,12 @@ function InitializeControls() {
    interval_legend = Get_legend_interval(refresh_interval);
    $('#intervalo').html(interval_legend);
 
-   $('#btnReload').click(function () {
-      LoadLogs(type_option,id_application);
+   $('#btnReload').click(function () {      
+      LoadLogs();
    });
    $('#datepicker').change(function (e) {
-      SetDateToSearch($('#fecha').val());
-      LoadLogs(type_option,id_application);
+      SetDateToSearch($('#fecha').val());      
+      LoadLogs();
       
    });
   
@@ -98,7 +104,8 @@ function InitializeControls() {
       $('#intervalo').html(interval_legend);
 
       clearInterval(idLogInterval);
-      idLogInterval=setInterval(LoadLogs, refresh_interval * 1000, type_option, id_application);
+      SetLogParameter();
+      idLogInterval=setInterval(LoadLogs, refresh_interval * 1000);
    });
    $('#tInterval').on('input', function () {
       refresh_interval = this.value;
@@ -111,20 +118,22 @@ function InitializeControls() {
    // bonus: add a placeholder
    $('.combobox').attr('placeholder', 'Nombre aplicación');
    $('#combo_app').change(function () {
-
-      let id_app = $("#combo_app option:selected").val();
-      LoadLogs(type_option, id_app);
-
+      LoadLogs();
+   });
+   $('#combo_typelog').change(function () {
+      LoadLogs();
    });
 }
 
-function LoadLogs(id_logtype,id_app) {
+function LoadLogs() {
 
    var html = '';
    // Obtiene los valores de los parámetros
    var id_logtype = (type_option !== id_logtype && type_option !== undefined ? type_option:id_logtype);
    var date = $('#fecha').val();
-   
+
+   id_application = $("#combo_app option:selected").val();
+   id_logtype = $("#combo_typelog option:selected").val();
   
    let datesql = '';
    // Validaciones de parametros
@@ -150,7 +159,7 @@ function LoadLogs(id_logtype,id_app) {
       data: JSON.stringify({
          'id_tipo_log': id_logtype,
          'fecha': datesql,
-         'id_aplicacion': id_app
+         'id_aplicacion': id_application
       }),
       dataType: "json"
    }).done(function (data) {
@@ -281,9 +290,9 @@ function LoadLogs(id_logtype,id_app) {
                html_row += '     <span class="xxsmall text-dark">DESCRIPCION:</span><br/><span>' + description + '<span>';
                html_row += '</div>';
 
-               html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">MAX MJS:</span><br/><span class="text-center">' + max_error_message + '<span>';
-               html_row += '</div>';
+               //html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
+               //html_row += '     <span class="xxsmall text-dark">MAX MJS:</span><br/><span class="text-center">' + max_error_message + '<span>';
+               //html_row += '</div>';
 
                html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
                html_row += '     <span class="xxsmall text-dark">CRITICIDAD:</span><br/><span ' + (level == 3 ? 'class="blink"' : '') + ' >' + critical + '<span>';
@@ -293,11 +302,11 @@ function LoadLogs(id_logtype,id_app) {
                html_row += '     <span class="xxsmall text-dark">SERVIDOR:</span><br/><span>' + server + '<span>';
                html_row += '</div>';
 
-               html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">MJES:</span><br/><span>' + log_count + '<span>';
+               html_row += '<div class="col-lg-1 xsmall text-right" style="border 1px solid; border-color:#BBB2B0;">'
+               html_row += '     <span class="xxsmall text-dark">MJES:</span><br/><span class="h6">' + log_count + '<span>';
                html_row += '</div>';
                html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0; cursor:pointer;" onclick="ShowLogsDetails(' + id + ',\'' + name + '\',\'' + datesql + '\',' + id_log_type + ',\'' + search + '\');">'
-               html_row += '     <span class="xxsmall text-dark">TIPO:</span><br/><span >' + log_type + '<i class="fa fa-search p-2"></i><span>';
+               html_row += '     <span class="xxsmall text-dark">TIPO:</span><br/><span>' + log_type + '<span>';
                html_row += '</div>';                                                                           // app_id, date, log_type, search
                //         html_row += '<div class="col-sm-3" style="border:0px solid; border-color:#000000; padding-left:5px; padding-right:5px; width:350px;">';
 
@@ -424,7 +433,7 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
          var color = '';
 
          var id = '';
-         var id_application = '';
+         var data_id_application = '';
          var date = '';
          var id_log_type = '';
          var description = '';
@@ -454,12 +463,15 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
 
          if (records_count > 0) {
 
+            let record = '';
+            
+
             while (index < data.items.length) {
 
                records_count++;
 
-               id = data.items[index].id;;
-               id_application = data.items[index].id_aplicacion;
+               id = data.items[index].id;
+               data_id_application = data.items[index].id_aplicacion;
                date = data.items[index].fecha;
                id_log_type = data.items[index].id_tipo_log;
                description = data.items[index].descripcion;
@@ -473,6 +485,26 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
                id_estado_log = data.items[index].id_estado_log;
                descripcion_estado = data.items[index].descripcion_estado_log;
                clave_estado = data.items[index].clave_estado_log;
+
+               // Almacena los datos en un registro
+               record = {
+                  id: data.items[index].id,
+                  id_application : data.items[index].id_aplicacion,
+                  date : data.items[index].fecha,
+                  id_log_type : data.items[index].id_tipo_log,
+                  description : data.items[index].descripcion,
+                  source : data.items[index].procedencia,
+                  package_description : data.items[index].descripcion_paquete,
+                  error_description : data.items[index].descripcion_error,
+                  response_description : data.items[index].descripcion_respuesta,
+                  group_code : data.items[index].codigo_agrupador,
+                  log_type : '',
+                  id_estado_log : data.items[index].id_estado_log,
+                  descripcion_estado : data.items[index].descripcion_estado_log,
+                  clave_estado : data.items[index].clave_estado_log
+               };
+               
+               records.push(record);
 
                color = 'text-info';
 
@@ -526,6 +558,8 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
                index++;
 
             }
+            
+            html_row += '<div class="row mt-4"><div class="col-sm-12"><button class="btn btn-light small w-100 border border-primary" style="height:25px;padding-top:0px;" onclick="DownloadLogDetail()"><span class="small">Descargar Logs</span></button></div></div>';
 
             // Cierra la fila
             //if (records.items.length > 0)
@@ -626,7 +660,6 @@ function LoadApps() {
    });
 }
 function LoadLogType() {
-
    var a = '';
 
    $.ajax({
@@ -642,7 +675,7 @@ function LoadLogType() {
 
       if (data != "") {
 
-         $('#typelog').empty();
+         $('#combo_typelog').empty();
 
          /*var records = JSON.parse(data);*/
          var index = 0;
@@ -653,7 +686,7 @@ function LoadLogType() {
 
          var id = '';
          var description = '';
-         
+
          //var ciclos = 0;
          records_count = data.count;
 
@@ -662,34 +695,34 @@ function LoadLogType() {
             records_count++;
 
             if (index == 0) {
-               html_row += '<span class="dropdown-item cursor-pointer" id="0" onclick="SelectType(0,`Todos`)">Todos</span>';
+               html_row += '<option value="0">Todos los tipos</option>';
             }
 
 
             id = data.items[index].id;
             description = data.items[index].description;
-            
-            html_row += '<span class="dropdown-item cursor-pointer" id="' + id + '" onclick="SelectType(' + id + ',`' + description +'`)">' + description + '</span>';
-            
+
+            //html_row += '<span class="dropdown-item cursor-pointer" id="' + id + '" onclick="SelectType(' + id + ',`' + description +'`)">' + description + '</span>';
+            html_row += '<option value="' + id + '"  >' + description + '</option>';
+
             index++;
 
          }
 
          $('#typelog').append(html_row);
 
+         $('#combo_typelog').html(html_row);
 
-         
 
       } else {
-         $('#typelog').empty();
+         $('#combo_typelog').empty();
 
       }
 
    }).fail(function (d) {
 
-      $('#message').html('<span class="text-danger blink">falla en la conexión</span>');
+      $('#message').html('<span class="text-danger blink">falla en la conexión aplicaciones</span>');
    });
-
 }
 
 function ChangeStateLog(control, id, clave_estado) {
@@ -712,7 +745,7 @@ function ChangeStateLog(control, id, clave_estado) {
 
             if ($(control).is(':checked')) {
                //alert(id + ' seleccionado');
-               $('#lbl_' + id).text('Finalizado');
+               $('#lbl_' + id).text('Solucionado');
             }
             else {
                //alert(id + ' sin seleccion');
@@ -778,7 +811,8 @@ function SelectType(id, name) {
    type_option = id;
    if(name!==undefined)
       $("#dropdownMenuButton").html('Tipo de mensajes :' + name);
-   LoadLogs(id);
+   //let id_app = $("#combo_app option:selected").val();
+   LoadLogs();
 }
 
 function pad(width, string, padding) {
@@ -882,5 +916,20 @@ function Get_check_status(key) {
          return true;
          break;
    }
+}
+
+function DownloadLogDetail() {
+   
+   //console.log(records);
+   //alert('descargando...');
+   let data = '';
+   records.forEach((item) => {
+
+      data += item.id + ' ' + item.error_description + ' '+ item.descripcion_estado + '\n';
+   })
+   var textFile = new Blob([data], {
+      type: 'text/plain'
+   });
+   invokeSaveAsDialog(textFile, 'TextFile.txt');
 }
 

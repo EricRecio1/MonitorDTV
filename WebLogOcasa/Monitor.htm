@@ -19,8 +19,12 @@
    <script src="./Scripts/bootstrap-datepicker.min.js"></script>
    <script src="./Scripts/bootstrap-combobox.min.js"></script>
 
-   <script src="Scripts/Common/Common.js" type="text/javascript"></script>
-   <script src="Scripts/Monitor/Monitor.js" type="text/javascript"></script>
+
+   <script src="./Scripts/Monitor/Monitor.js" type="text/javascript"></script>
+   <script src="./Scripts/Apps/Nocnoc/NocnocBuilder.js" type="text/javascript"></script>
+   <script src="./Scripts/Common/Common.js" type="text/javascript"></script>
+
+
 
 
 </head>
@@ -57,16 +61,8 @@
       <div class="row">
          <div class="col-lg-3 pt-1">
 
-            <div class="dropdown w-100">
-               <button class="btn btn-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="1">
-                  Tipo de mensajes
-               </button>
-               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="typelog">
-                  <span class="dropdown-item cursor-pointer" id="0" onclick="SelectType(0,'Todos')">Todos</span>
-               </div>
-            </div>
-
+            <select class="form-control" id="combo_typelog">
+            </select>
          </div>
          <div class="col-lg-3 pt-1">
 
