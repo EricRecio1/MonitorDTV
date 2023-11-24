@@ -8,7 +8,7 @@ using System.Web.Http.Cors;
 
 namespace ApiLogOcasa.Controllers
 {
-    [EnableCors(origins: "https://localhost:44351", headers: "*", methods: "*")]
+    [EnableCors(origins: "https://localhost:44351,https://localhost:443,https://monitordelogs.ocasa.com:443,https://monitordelogs.ocasa.com", headers: "*", methods: "*")]
     public class ListLogDetailController : ApiController
     {
 
