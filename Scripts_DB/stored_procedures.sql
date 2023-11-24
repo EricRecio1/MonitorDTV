@@ -1,28 +1,29 @@
-USE [AmbientesIT]
-GO
-
-/****** Object:  StoredProcedure [dbo].[Monitor]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor]    Script Date: 24/11/2023 09:17:23 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+
+-- OCASA 2023
 -- Muestra la cantidad de mensajes recibidos por aplicacion en el día
 -- Ejemplo
---			exec [dbo].[Monitor] @id_tipo_log=null, @fecha='2023-09-22'
---			exec [dbo].[Monitor] @id_tipo_log=0, @fecha='1/1/1900'
+--			exec [Monitor] @id_tipo_log=null, @fecha='2023-11-17',@id_aplicacion=null,@id_estado=2
+--			exec [Monitor] @id_tipo_log=0, @fecha='1900-01-01'
+--			exec [Monitor] @id_tipo_log=null,@fecha='2023-10-17',@id_aplicacion=6
 CREATE procedure [dbo].[Monitor]
 @id_tipo_log int=null,
-@fecha datetime=null
+@fecha datetime=null,
+@id_aplicacion bigint=null,
+@id_estado int=null
 as
 begin
 	
 	if @fecha is null or @fecha <= '1900-01-01'
 		set @fecha = CONVERT(DATETIME, CONVERT(VARCHAR(10),GETDATE(),120))
- 
-		
+ 	
 	--set @fecha = '2022-09-19'
 
 	-- Lista los registros del día
@@ -57,29 +58,71 @@ begin
 		
 		left join (
 			select 
-			mon.Id_Aplicacion, mon.Id_tipo_log,count(1) as 'cantidad_log'
-			from monitor_log mon
+				mon.id_aplicacion, mon.id_tipo_log,count(1) as 'cantidad_log'
+				
+			from monitor_log mon			
 			where 
 				(mon.Fecha >= @fecha and mon.Fecha < dateadd(dd,1,@fecha))
 				and (mon.id_tipo_log=@id_tipo_log or @id_tipo_log is null or @id_tipo_log = 0)
- 			group by mon.Id_Aplicacion, mon.Id_tipo_log 
+				and (mon.id_estado_log=@id_estado or @id_estado is null)
+ 			group by mon.Id_Aplicacion, mon.Id_tipo_log
 			) cant on cant.Id_Aplicacion = app.Id
 		left join servidor ser on ser.id=app.id_servidor
-		inner join tipo_log tip on tip.id=cant.id_tipo_log
+		inner join tipo_log tip on tip.id=cant.id_tipo_log		
+		where (app.id=@id_aplicacion or @id_aplicacion is null or @id_aplicacion=0)
 		) res
+	--where res.id
 	order by res.Nivel desc, res.Cantidad_Log desc
 
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_AgregarApp]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_ActualizarEstadoLog]    Script Date: 24/11/2023 09:17:25 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
+-- Actualiza el estado del log
+-- Ejemplo
+--			exec Monitor_ActualizarEstadoLog 10676,'REVI'
+-- Estados posibles: PEND - REVI - SOLU
+CREATE procedure [dbo].[Monitor_ActualizarEstadoLog]
+@id_log	bigint,
+@clave_estado varchar(20)
+as
+begin
+	declare @id_estado int
+
+	select @id_estado=id from estado_log where clave=@clave_estado
+	if @id_estado>0
+	begin
+
+		update monitor_log 
+		set id_estado_log=@id_estado where id=@id_log
+
+	end
+	if @@ROWCOUNT <> 0	
+		select @id_log as 'Id','Actualizacion correcta' as 'Descripcion','OK' as 'Respuesta'
+	else
+		select 0 as 'Id','No actualizado' as 'Descripcion', 'ERROR' as 'Respuesta'
+	
+
+end
+GO
+
+/****** Object:  StoredProcedure [dbo].[Monitor_AgregarApp]    Script Date: 24/11/2023 09:17:26 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- OCASA 2023 
 -- Inserta un registro en la tabla de aplicacion
 -- Ejemplo
 --			
@@ -109,7 +152,7 @@ begin
 
 	begin try
 	
-		if not exists(select * from [dbo].[aplicacion] where nombre=@nombre and
+		if not exists(select * from [aplicacion] where nombre=@nombre and
 			url_git=@url_git)
 		begin
 			-- Validacion de servidor
@@ -122,7 +165,7 @@ begin
 			if @validaciones=1
 			begin
 
-				insert into [dbo].[aplicacion] 
+				insert into [aplicacion] 
 						(nombre,fecha_alta,fecha_creacion,activo,descripcion,especificaciones,url_git,
 						id_servidor,url_documentos,max_mensajes_error,id_cliente)
 						values(
@@ -158,14 +201,15 @@ begin
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_AgregarLog]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_AgregarLog]    Script Date: 24/11/2023 09:17:27 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
 -- Inserta un registro en la tabla de log
 -- Ejemplo
 --			Monitor_AgregarLog 1,1,'Prueba con agrupador','STORED PROCEDURE',null,null,null,'A1'
@@ -215,7 +259,7 @@ begin
 		select @estado_log=id from estado_log where clave='PEND'
 		if @estado_log is null set @estado_log=1
 
-		insert into [dbo].[monitor_log] 
+		insert into [monitor_log] 
 							(id_aplicacion,fecha,id_tipo_log,id_cliente,descripcion,procedencia,descripcion_paquete,
 							descripcion_error,descripcion_respuesta,codigo_agrupador,id_estado_log)
 		values		(@Id_Aplicacion,getdate(),@Id_Tipo_Log,@Id_Cliente,@Descripcion,@Procedencia,@Descripcion_Paquete,
@@ -248,14 +292,15 @@ begin
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_AgregarServidor]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_AgregarServidor]    Script Date: 24/11/2023 09:17:28 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
 -- Inserta un registro en la tabla de servidores
 -- Ejemplo
 --			
@@ -281,7 +326,7 @@ begin
 
 	begin try
 	
-		if not exists(select * from [dbo].[servidor] where upper(nombre_dominio)=upper(@Nombre_Dominio) 
+		if not exists(select * from [servidor] where upper(nombre_dominio)=upper(@Nombre_Dominio) 
 			or
 			(ip_v4=@Ip_V4 and not @Ip_V4 is null and @Ip_V4<>'') 
 			or 
@@ -290,7 +335,7 @@ begin
 			
 			if @Nombre_Dominio<>'' and @Ip_V4<>''
 			begin 
-				insert into [dbo].[servidor] 
+				insert into [servidor] 
 						(fecha_alta, nombre_dominio,ip_v4,ip_v6,activo,productivo,descripcion)
 						values(	getdate(),@Nombre_Dominio,@Ip_V4,@Ip_V6,@Activo,@Productivo,@Descripcion )
 				if @@ERROR=0
@@ -319,40 +364,15 @@ begin
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_CleanLog]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_CrearConfiguracion]    Script Date: 24/11/2023 09:17:28 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
--- Limpia los logs
--- Ejemplo
---			Monitor_CleanLog
-CREATE procedure [dbo].[Monitor_CleanLog]
-@datefrom as datetime=null
-as
-begin
 
-
-	delete from monitor_log 
-	where ( fecha <= @datefrom and fecha < getdate()) or
-		  ( fecha <= dateadd(d,-20,getdate())) 
-	
-end
-
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[Monitor_CrearConfiguracion]    Script Date: 5/10/2023 17:37:14 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
--- OCASA 
+-- OCASA 2023 
 -- Inserta un registro en la tabla de configuracion
 -- Ejemplo
 --		exec Monitor_CrearConfiguracion 1,'ultima_hora_procesada','08:00:00'
@@ -376,14 +396,15 @@ begin
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_LeerConfigJob]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_LeerConfigJob]    Script Date: 24/11/2023 09:17:29 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
 -- Lee los registros de la configuracion para el log
 -- Ejemplo
 --		exec Monitor_LeerConfigLog
@@ -396,7 +417,7 @@ begin
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_ListarLog]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_LimpiarLogs]    Script Date: 24/11/2023 09:17:30 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -404,7 +425,84 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
--- OCASA 
+-- OCASA 2023 
+-- Limpia los logs
+-- Ejemplo
+--			Monitor_CleanLog
+create procedure [dbo].[Monitor_LimpiarLogs]
+@datefrom as datetime=null
+as
+begin
+
+	-- Si no se especifica una fecha de corte
+	-- elimina los registros de 90 días para atras
+	delete from monitor_log 
+	where ( fecha <= @datefrom and fecha < getdate()-90) or
+		  ( fecha < getdate()-90) 
+	
+end
+
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[Monitor_ListarAplicacion]    Script Date: 24/11/2023 09:17:31 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+-- OCASA 2023 
+-- Lista los tipos de logs
+-- Ejemplo Monitor_ListarAplicacion
+--		   Monitor_ListarAplicacion 1
+create procedure [dbo].[Monitor_ListarAplicacion]
+@id bigint=null
+as
+begin
+	select * from aplicacion
+	where @id is null or id=@id
+end
+GO
+
+/****** Object:  StoredProcedure [dbo].[Monitor_ListarConfiguracion]    Script Date: 24/11/2023 09:17:33 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- OCASA 2023 
+-- Lista todas las configuraciones de los jobs
+-- Ejemplo
+--		exec Monitor_ListarConfiguracion
+create procedure [dbo].[Monitor_ListarConfiguracion]
+@id_aplicacion int=null
+as
+begin
+
+select cf.id_aplicacion, ap.nombre, cf.clave, cf.valor
+  FROM [AmbientesIT].[configuracion] cf
+  inner join [AmbientesIT].[aplicacion] ap on ap.id=cf.id_aplicacion
+  where id_aplicacion=@id_aplicacion or @id_aplicacion is null
+  order by id_aplicacion asc, clave asc
+
+end
+GO
+
+/****** Object:  StoredProcedure [dbo].[Monitor_ListarLog]    Script Date: 24/11/2023 09:17:34 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+-- OCASA 2023 
 -- Listado de registro en la tabla de log
 -- Ejemplo
 --			Monitor_ListarLog null,'2023-10-05','1'
@@ -418,7 +516,9 @@ as
 begin
 
 declare @estado_log_descripcion varchar(100)
+declare @estado_clave varchar(20)
 set @estado_log_descripcion='estado no definido'
+set @estado_clave='PEND'
 
 	if @fecha is null or @fecha <= '1900-01-01' or @fecha =''
 		set @fecha = CONVERT(DATETIME, CONVERT(VARCHAR(10),GETDATE(),120))
@@ -435,8 +535,9 @@ set @estado_log_descripcion='estado no definido'
 		ml.descripcion_error,
 		ml.descripcion_respuesta,
 		ml.codigo_agrupador,
-		ml.id_estado_log,
-		coalesce(el.descripcion,@estado_log_descripcion)
+		coalesce(ml.id_estado_log,0) as 'id_estado',
+		coalesce(el.clave,@estado_clave) as 'clave_estado',
+		coalesce(el.descripcion,@estado_log_descripcion) as 'descripcion_estado'
 	from monitor_log ml
 	left join estado_log el on el.id=ml.id_estado_log
 	where 
@@ -458,7 +559,7 @@ set @estado_log_descripcion='estado no definido'
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_ListarTipoLog]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_ListarTipoLog]    Script Date: 24/11/2023 09:17:35 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -466,7 +567,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
--- OCASA 
+
+-- OCASA 2023 
 -- Lista los tipos de logs
 -- Ejemplo Monitor_ListarTipoLog
 --		   Monitor_ListarTipoLog 'ADV'
@@ -479,19 +581,20 @@ begin
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_ObtenerConfiguracionJob]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_ObtenerConfiguracionJob]    Script Date: 24/11/2023 09:17:36 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
 -- Muestra la cantidad de mensajes recibidos por aplicacion en el día
 -- Ejemplo
 --			exec dbo.Monitor_ObtenerConfiguracionJob 1
 CREATE procedure [dbo].[Monitor_ObtenerConfiguracionJob]
-@id_aplicacion int
+@id_aplicacion int=null
 as
 begin
 
@@ -505,19 +608,22 @@ begin
 	--parametros
 	--from configuracion_job_log where id_aplicacion=@id_aplicacion
 
-	select * from configuracion where id_aplicacion=@id_aplicacion
+	select id,id_aplicacion,clave,valor from configuracion 
+	where id_aplicacion=@id_aplicacion or @id_aplicacion is null
+	order by id_aplicacion asc, clave desc
 
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_ObtenerJobs]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_ObtenerJobs]    Script Date: 24/11/2023 09:17:37 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
 -- Obtiene los jobs configurados
 -- Ejemplo
 --			exec Monitor_ObtenerJobs
@@ -525,19 +631,20 @@ CREATE procedure [dbo].[Monitor_ObtenerJobs]
 as
 begin
 
-	select * from [dbo].[jobs] where activo = 1
+	select * from [jobs] where activo = 1
 	
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_Reindex_Identity]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_Reindex_Identity]    Script Date: 24/11/2023 09:17:38 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
 -- Re-indexa el identity de una tabla
 -- Ejemplo
 -- exec Monitor_Reindex_Identity 'configuracion',24
@@ -553,14 +660,15 @@ begin
 end
 GO
 
-/****** Object:  StoredProcedure [dbo].[Monitor_UpdateConfiguration]    Script Date: 5/10/2023 17:37:14 ******/
+/****** Object:  StoredProcedure [dbo].[Monitor_UpdateConfiguration]    Script Date: 24/11/2023 09:17:39 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- OCASA 
+
+-- OCASA 2023 
 -- Actualiza un valor de configuracion para los jobs
 -- Ejemplo
 --		
@@ -570,7 +678,7 @@ create procedure [dbo].[Monitor_UpdateConfiguration]
 @valor varchar(1000)
 as
 begin
-	update [dbo].[configuracion]
+	update [configuracion]
 	set valor=@valor
 	where id_aplicacion=@id_applicacion and clave=@clave
 
