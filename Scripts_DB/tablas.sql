@@ -1,7 +1,4 @@
-USE [AmbientesIT]
-GO
-
-/****** Object:  Table [dbo].[aplicacion]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[aplicacion]    Script Date: 24/11/2023 09:14:15 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -9,10 +6,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[aplicacion](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[id] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](200) NOT NULL,
 	[fecha_alta] [datetime] NOT NULL,
-	[fecha_creacion] [datetime] NULL,
+	[fecha_creacion] [datetime] NOT NULL,
 	[activo] [bit] NOT NULL,
 	[descripcion] [varchar](2000) NOT NULL,
 	[especificaciones] [varchar](2000) NULL,
@@ -21,14 +18,15 @@ CREATE TABLE [dbo].[aplicacion](
 	[url_documentos] [varchar](2000) NULL,
 	[max_mensajes_error] [int] NULL,
 	[id_cliente] [int] NULL,
+	[id_equipo] [int] NULL,
  CONSTRAINT [PK_aplicacion] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[configuracion]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[configuracion]    Script Date: 24/11/2023 09:14:16 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -43,11 +41,11 @@ CREATE TABLE [dbo].[configuracion](
  CONSTRAINT [PK_configuracion] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[estado_log]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[estado_log]    Script Date: 24/11/2023 09:14:16 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -61,11 +59,11 @@ CREATE TABLE [dbo].[estado_log](
  CONSTRAINT [PK_estado_log] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[jobs]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[jobs]    Script Date: 24/11/2023 09:14:17 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -78,15 +76,15 @@ CREATE TABLE [dbo].[jobs](
 	[path] [varchar](500) NOT NULL,
 	[activo] [bit] NULL,
 	[parametros] [varchar](100) NULL,
-	[id_aplicacion] [bigint] NULL,
+	[id_aplicacion] [int] NULL,
  CONSTRAINT [PK_jobs] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[monitor_log]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[monitor_log]    Script Date: 24/11/2023 09:14:17 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -109,11 +107,11 @@ CREATE TABLE [dbo].[monitor_log](
  CONSTRAINT [PK_monitor_log] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[servidor]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[servidor]    Script Date: 24/11/2023 09:14:17 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -132,11 +130,11 @@ CREATE TABLE [dbo].[servidor](
  CONSTRAINT [PK_Servidor] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[software]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[software]    Script Date: 24/11/2023 09:14:18 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -153,11 +151,11 @@ CREATE TABLE [dbo].[software](
  CONSTRAINT [PK_software] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[tipo_log]    Script Date: 5/10/2023 17:36:39 ******/
+/****** Object:  Table [dbo].[tipo_log]    Script Date: 24/11/2023 09:14:18 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -171,7 +169,7 @@ CREATE TABLE [dbo].[tipo_log](
  CONSTRAINT [PK_monitor_tipoLog] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
@@ -189,6 +187,41 @@ REFERENCES [dbo].[servidor] ([id])
 GO
 
 ALTER TABLE [dbo].[aplicacion] CHECK CONSTRAINT [FK_aplicacion_servidor]
+GO
+
+ALTER TABLE [dbo].[configuracion]  WITH CHECK ADD  CONSTRAINT [FK_configuracion_aplicacion] FOREIGN KEY([id_aplicacion])
+REFERENCES [dbo].[aplicacion] ([id])
+GO
+
+ALTER TABLE [dbo].[configuracion] CHECK CONSTRAINT [FK_configuracion_aplicacion]
+GO
+
+ALTER TABLE [dbo].[jobs]  WITH CHECK ADD  CONSTRAINT [FK_jobs_aplicacion] FOREIGN KEY([id_aplicacion])
+REFERENCES [dbo].[aplicacion] ([id])
+GO
+
+ALTER TABLE [dbo].[jobs] CHECK CONSTRAINT [FK_jobs_aplicacion]
+GO
+
+ALTER TABLE [dbo].[monitor_log]  WITH CHECK ADD  CONSTRAINT [FK_monitor_log_aplicacion] FOREIGN KEY([id_aplicacion])
+REFERENCES [dbo].[aplicacion] ([id])
+GO
+
+ALTER TABLE [dbo].[monitor_log] CHECK CONSTRAINT [FK_monitor_log_aplicacion]
+GO
+
+ALTER TABLE [dbo].[monitor_log]  WITH CHECK ADD  CONSTRAINT [FK_monitor_log_estado] FOREIGN KEY([id_estado_log])
+REFERENCES [dbo].[estado_log] ([id])
+GO
+
+ALTER TABLE [dbo].[monitor_log] CHECK CONSTRAINT [FK_monitor_log_estado]
+GO
+
+ALTER TABLE [dbo].[monitor_log]  WITH CHECK ADD  CONSTRAINT [FK_monitor_log_tipo_log] FOREIGN KEY([id_tipo_log])
+REFERENCES [dbo].[tipo_log] ([id])
+GO
+
+ALTER TABLE [dbo].[monitor_log] CHECK CONSTRAINT [FK_monitor_log_tipo_log]
 GO
 
 ALTER TABLE [dbo].[software]  WITH CHECK ADD  CONSTRAINT [FK_software_servidor] FOREIGN KEY([id_servidor])
