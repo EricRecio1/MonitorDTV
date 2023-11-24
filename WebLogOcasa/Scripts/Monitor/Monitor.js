@@ -2,11 +2,11 @@
 
 
 // PRD
-var url_api_logs = 'https://localhost/apilog/api/ListLogs';
-var url_api_logtype = 'https://localhost/apilog/api/ListTypesLog';
-var url_api_logs_detail = 'https://localhost/apilog/api/ListLogDetail';
-var url_api_apps = 'https://localhost/apilog/api/ListApplication';
-var url_api_update_state = 'https://localhost/apilog/api/UpdateLogState';
+var url_api_logs = 'https://monitordelogsapi.ocasa.com/api/ListLogs';
+var url_api_logtype = 'https://monitordelogsapi.ocasa.com/api/ListTypesLog';
+var url_api_logs_detail = 'https://monitordelogsapi.ocasa.com/api/ListLogDetail';
+var url_api_apps = 'https://monitordelogsapi.ocasa.com/api/ListApplication';
+var url_api_update_state = 'https://monitordelogsapi.ocasa.com/api/UpdateLogState';
 
 // DEVELOP
 /*
@@ -379,9 +379,9 @@ function LoadLogs() {
          $('#data').append(html_row);
       }
 
-   }).fail(function (d) {
-
-      $('#message').html('<span class="text-danger blink">falla en la conexión</span>');
+   }).fail(function (jqXHR, textStatus, errorThrown) {
+            
+      $('#message').html('<span class="text-danger blink">falla en la conexión ' + VerifyErrorType(jqXHR) +'</span>');
    });
 
 
@@ -594,7 +594,7 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
 
    }).fail(function (d) {
 
-      $('#message').html('<span class="text-danger blink">Falla en la conexión a BD</span><br/><span>d</span>');
+      $('#message').html('<span class="text-danger blink">Falla en la conexión a BD ' + VerifyErrorType(jqXHR) + ' </span><br/><span>d</span>');
    });
 
 }
@@ -933,3 +933,36 @@ function DownloadLogDetail() {
    invokeSaveAsDialog(textFile, 'TextFile.txt');
 }
 
+function VerifyErrorType(jqXHR) {
+
+   if (jqXHR.status === 0) {
+
+      message = 'Verificar conectividad de red';
+
+   } else if (jqXHR.status == 404) {
+
+      message = 'Recurso no encontrado [404]';
+
+   } else if (jqXHR.status == 500) {
+
+      message = 'Internal Server Error [500].';
+
+   } else if (textStatus === 'parsererror') {
+
+      message = 'Requested JSON parse failed.';
+
+   } else if (textStatus === 'timeout') {
+
+      message = 'Error de Time Out';
+
+   } else if (textStatus === 'abort') {
+
+      message = 'Requerimiento Ajax abortedo';
+
+   } else {
+
+      message = 'Uncaught Error: ' + jqXHR.responseText;
+
+   }
+   return (message);
+}
