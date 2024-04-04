@@ -5,13 +5,22 @@ namespace ApiLogOcasa.Models
 {
     public class LogListRequest
     {
-        [JsonProperty("id_tipo_log")]
-        public int id_tipo_log { get; set; }
+        [JsonProperty("nroDoc")]
+        public int nroDoc { get; set; }
 
-        [JsonProperty("fecha")]
-        public string fecha { get; set; }
+        [JsonProperty("estado")]
+        public string estado { get; set; }
 
-        [JsonProperty("id_aplicacion")]
-        public long id_aplicacion { get; set; }
+        [JsonProperty("fechaDesde")]
+        public string fechaDesde { get; set; }
+
+        [JsonProperty("fechaHasta")]
+        public string fechaHasta { get; set; }
+        
+        [JsonProperty("pais")]
+        public string pais { get; set; }
+
+        [JsonProperty("integracion")]
+        public decimal integracion { get; set; }
     }
 }

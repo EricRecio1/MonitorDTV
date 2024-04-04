@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="OcasaExtranetModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DTV_Moni_Error">
+          <Key>
+            <PropertyRef Name="Clave" />
+          </Key>
+          <Property Name="Clave" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Fecha_sys" Type="datetime" />
+          <Property Name="Fecha_Vcia" Type="datetime" />
+          <Property Name="Usuario" Type="varchar" MaxLength="50" />
+          <Property Name="Desc_Corta" Type="nvarchar" MaxLength="12" />
+          <Property Name="Desc_Larga" Type="nvarchar" MaxLength="50" />
+          <Property Name="Estado" Type="nvarchar" MaxLength="1" />
+          <Property Name="IdDocumento" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="FechaError" Type="nvarchar" MaxLength="10" />
+          <Property Name="NombreArchivo" Type="nvarchar" MaxLength="100" />
+          <Property Name="IdIntegracion" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="IdPais" Type="nvarchar" MaxLength="2" />
+          <Property Name="IdEstado" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="IdResponsable" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="FechaCierre" Type="nvarchar" MaxLength="10" />
+          <Property Name="Error" Type="nvarchar" MaxLength="4000" />
+          <Property Name="Observacion" Type="nvarchar" MaxLength="4000" />
+        </EntityType>
+        <EntityType Name="DTV_Moni_Estado">
+          <Key>
+            <PropertyRef Name="IdEstado" />
+          </Key>
+          <Property Name="Clave" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Fecha_sys" Type="datetime" />
+          <Property Name="Fecha_Vcia" Type="datetime" />
+          <Property Name="Usuario" Type="varchar" MaxLength="50" />
+          <Property Name="Desc_Corta" Type="nvarchar" MaxLength="12" />
+          <Property Name="Desc_Larga" Type="nvarchar" MaxLength="50" />
+          <Property Name="Estado" Type="nvarchar" MaxLength="1" />
+          <Property Name="IdEstado" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="DescripEstado" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="DTV_Moni_Integ">
+          <Key>
+            <PropertyRef Name="IdIntegracion" />
+          </Key>
+          <Property Name="Clave" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Fecha_sys" Type="datetime" />
+          <Property Name="Fecha_Vcia" Type="datetime" />
+          <Property Name="Usuario" Type="varchar" MaxLength="50" />
+          <Property Name="Desc_Corta" Type="nvarchar" MaxLength="12" />
+          <Property Name="Desc_Larga" Type="nvarchar" MaxLength="50" />
+          <Property Name="Estado" Type="nvarchar" MaxLength="1" />
+          <Property Name="IdIntegracion" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="DescripIntegra" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="DTV_Moni_Respon">
+          <Key>
+            <PropertyRef Name="IdResponsable" />
+          </Key>
+          <Property Name="Clave" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Fecha_sys" Type="datetime" />
+          <Property Name="Fecha_Vcia" Type="datetime" />
+          <Property Name="Usuario" Type="varchar" MaxLength="50" />
+          <Property Name="Desc_Corta" Type="nvarchar" MaxLength="12" />
+          <Property Name="Desc_Larga" Type="nvarchar" MaxLength="50" />
+          <Property Name="Estado" Type="nvarchar" MaxLength="1" />
+          <Property Name="IdResponsable" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="DescripResponsa" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK__DTV_Moni___IdEst__360EFAD2">
+          <End Role="DTV_Moni_Estado" Type="Self.DTV_Moni_Estado" Multiplicity="0..1" />
+          <End Role="DTV_Moni_Error" Type="Self.DTV_Moni_Error" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DTV_Moni_Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="DTV_Moni_Error">
+              <PropertyRef Name="IdEstado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DTV_Moni___IdInt__37F74344">
+          <End Role="DTV_Moni_Integ" Type="Self.DTV_Moni_Integ" Multiplicity="0..1" />
+          <End Role="DTV_Moni_Error" Type="Self.DTV_Moni_Error" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DTV_Moni_Integ">
+              <PropertyRef Name="IdIntegracion" />
+            </Principal>
+            <Dependent Role="DTV_Moni_Error">
+              <PropertyRef Name="IdIntegracion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DTV_Moni___IdRes__38EB677D">
+          <End Role="DTV_Moni_Respon" Type="Self.DTV_Moni_Respon" Multiplicity="0..1" />
+          <End Role="DTV_Moni_Error" Type="Self.DTV_Moni_Error" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DTV_Moni_Respon">
+              <PropertyRef Name="IdResponsable" />
+            </Principal>
+            <Dependent Role="DTV_Moni_Error">
+              <PropertyRef Name="IdResponsable" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="OcasaExtranetModelStoreContainer">
+          <EntitySet Name="DTV_Moni_Error" EntityType="Self.DTV_Moni_Error" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DTV_Moni_Estado" EntityType="Self.DTV_Moni_Estado" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DTV_Moni_Integ" EntityType="Self.DTV_Moni_Integ" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DTV_Moni_Respon" EntityType="Self.DTV_Moni_Respon" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__DTV_Moni___IdEst__360EFAD2" Association="Self.FK__DTV_Moni___IdEst__360EFAD2">
+            <End Role="DTV_Moni_Estado" EntitySet="DTV_Moni_Estado" />
+            <End Role="DTV_Moni_Error" EntitySet="DTV_Moni_Error" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DTV_Moni___IdInt__37F74344" Association="Self.FK__DTV_Moni___IdInt__37F74344">
+            <End Role="DTV_Moni_Integ" EntitySet="DTV_Moni_Integ" />
+            <End Role="DTV_Moni_Error" EntitySet="DTV_Moni_Error" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DTV_Moni___IdRes__38EB677D" Association="Self.FK__DTV_Moni___IdRes__38EB677D">
+            <End Role="DTV_Moni_Respon" EntitySet="DTV_Moni_Respon" />
+            <End Role="DTV_Moni_Error" EntitySet="DTV_Moni_Error" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="OcasaExtranetModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="DTV_Moni_Error">
+          <Key>
+            <PropertyRef Name="Clave" />
+          </Key>
+          <Property Name="Clave" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Fecha_sys" Type="DateTime" Precision="3" />
+          <Property Name="Fecha_Vcia" Type="DateTime" Precision="3" />
+          <Property Name="Usuario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Desc_Corta" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="Desc_Larga" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Estado" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="IdDocumento" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="FechaError" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="NombreArchivo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IdIntegracion" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="IdPais" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="IdEstado" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="IdResponsable" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="FechaCierre" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Error" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="Observacion" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DTV_Moni_Estado" Relationship="Self.FK__DTV_Moni___IdEst__360EFAD2" FromRole="DTV_Moni_Error" ToRole="DTV_Moni_Estado" />
+          <NavigationProperty Name="DTV_Moni_Integ" Relationship="Self.FK__DTV_Moni___IdInt__37F74344" FromRole="DTV_Moni_Error" ToRole="DTV_Moni_Integ" />
+          <NavigationProperty Name="DTV_Moni_Respon" Relationship="Self.FK__DTV_Moni___IdRes__38EB677D" FromRole="DTV_Moni_Error" ToRole="DTV_Moni_Respon" />
+        </EntityType>
+        <EntityType Name="DTV_Moni_Estado">
+          <Key>
+            <PropertyRef Name="IdEstado" />
+          </Key>
+          <Property Name="Clave" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Fecha_sys" Type="DateTime" Precision="3" />
+          <Property Name="Fecha_Vcia" Type="DateTime" Precision="3" />
+          <Property Name="Usuario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Desc_Corta" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="Desc_Larga" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Estado" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="IdEstado" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="DescripEstado" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DTV_Moni_Error" Relationship="Self.FK__DTV_Moni___IdEst__360EFAD2" FromRole="DTV_Moni_Estado" ToRole="DTV_Moni_Error" />
+        </EntityType>
+        <EntityType Name="DTV_Moni_Integ">
+          <Key>
+            <PropertyRef Name="IdIntegracion" />
+          </Key>
+          <Property Name="Clave" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Fecha_sys" Type="DateTime" Precision="3" />
+          <Property Name="Fecha_Vcia" Type="DateTime" Precision="3" />
+          <Property Name="Usuario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Desc_Corta" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="Desc_Larga" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Estado" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="IdIntegracion" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="DescripIntegra" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DTV_Moni_Error" Relationship="Self.FK__DTV_Moni___IdInt__37F74344" FromRole="DTV_Moni_Integ" ToRole="DTV_Moni_Error" />
+        </EntityType>
+        <EntityType Name="DTV_Moni_Respon">
+          <Key>
+            <PropertyRef Name="IdResponsable" />
+          </Key>
+          <Property Name="Clave" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Fecha_sys" Type="DateTime" Precision="3" />
+          <Property Name="Fecha_Vcia" Type="DateTime" Precision="3" />
+          <Property Name="Usuario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Desc_Corta" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="Desc_Larga" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Estado" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="IdResponsable" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="DescripResponsa" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DTV_Moni_Error" Relationship="Self.FK__DTV_Moni___IdRes__38EB677D" FromRole="DTV_Moni_Respon" ToRole="DTV_Moni_Error" />
+        </EntityType>
+        <Association Name="FK__DTV_Moni___IdEst__360EFAD2">
+          <End Role="DTV_Moni_Estado" Type="Self.DTV_Moni_Estado" Multiplicity="0..1" />
+          <End Role="DTV_Moni_Error" Type="Self.DTV_Moni_Error" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DTV_Moni_Estado">
+              <PropertyRef Name="IdEstado" />
+            </Principal>
+            <Dependent Role="DTV_Moni_Error">
+              <PropertyRef Name="IdEstado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DTV_Moni___IdInt__37F74344">
+          <End Role="DTV_Moni_Integ" Type="Self.DTV_Moni_Integ" Multiplicity="0..1" />
+          <End Role="DTV_Moni_Error" Type="Self.DTV_Moni_Error" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DTV_Moni_Integ">
+              <PropertyRef Name="IdIntegracion" />
+            </Principal>
+            <Dependent Role="DTV_Moni_Error">
+              <PropertyRef Name="IdIntegracion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DTV_Moni___IdRes__38EB677D">
+          <End Role="DTV_Moni_Respon" Type="Self.DTV_Moni_Respon" Multiplicity="0..1" />
+          <End Role="DTV_Moni_Error" Type="Self.DTV_Moni_Error" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DTV_Moni_Respon">
+              <PropertyRef Name="IdResponsable" />
+            </Principal>
+            <Dependent Role="DTV_Moni_Error">
+              <PropertyRef Name="IdResponsable" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="OcasaExtranetEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="DTV_Moni_Error" EntityType="Self.DTV_Moni_Error" />
+          <EntitySet Name="DTV_Moni_Estado" EntityType="Self.DTV_Moni_Estado" />
+          <EntitySet Name="DTV_Moni_Integ" EntityType="Self.DTV_Moni_Integ" />
+          <EntitySet Name="DTV_Moni_Respon" EntityType="Self.DTV_Moni_Respon" />
+          <AssociationSet Name="FK__DTV_Moni___IdEst__360EFAD2" Association="Self.FK__DTV_Moni___IdEst__360EFAD2">
+            <End Role="DTV_Moni_Estado" EntitySet="DTV_Moni_Estado" />
+            <End Role="DTV_Moni_Error" EntitySet="DTV_Moni_Error" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DTV_Moni___IdInt__37F74344" Association="Self.FK__DTV_Moni___IdInt__37F74344">
+            <End Role="DTV_Moni_Integ" EntitySet="DTV_Moni_Integ" />
+            <End Role="DTV_Moni_Error" EntitySet="DTV_Moni_Error" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DTV_Moni___IdRes__38EB677D" Association="Self.FK__DTV_Moni___IdRes__38EB677D">
+            <End Role="DTV_Moni_Respon" EntitySet="DTV_Moni_Respon" />
+            <End Role="DTV_Moni_Error" EntitySet="DTV_Moni_Error" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="OcasaExtranetModelStoreContainer" CdmEntityContainer="OcasaExtranetEntities">
+          <EntitySetMapping Name="DTV_Moni_Error">
+            <EntityTypeMapping TypeName="OcasaExtranetModel.DTV_Moni_Error">
+              <MappingFragment StoreEntitySet="DTV_Moni_Error">
+                <ScalarProperty Name="Clave" ColumnName="Clave" />
+                <ScalarProperty Name="Fecha_sys" ColumnName="Fecha_sys" />
+                <ScalarProperty Name="Fecha_Vcia" ColumnName="Fecha_Vcia" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+                <ScalarProperty Name="Desc_Corta" ColumnName="Desc_Corta" />
+                <ScalarProperty Name="Desc_Larga" ColumnName="Desc_Larga" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="IdDocumento" ColumnName="IdDocumento" />
+                <ScalarProperty Name="FechaError" ColumnName="FechaError" />
+                <ScalarProperty Name="NombreArchivo" ColumnName="NombreArchivo" />
+                <ScalarProperty Name="IdIntegracion" ColumnName="IdIntegracion" />
+                <ScalarProperty Name="IdPais" ColumnName="IdPais" />
+                <ScalarProperty Name="IdEstado" ColumnName="IdEstado" />
+                <ScalarProperty Name="IdResponsable" ColumnName="IdResponsable" />
+                <ScalarProperty Name="FechaCierre" ColumnName="FechaCierre" />
+                <ScalarProperty Name="Error" ColumnName="Error" />
+                <ScalarProperty Name="Observacion" ColumnName="Observacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DTV_Moni_Estado">
+            <EntityTypeMapping TypeName="OcasaExtranetModel.DTV_Moni_Estado">
+              <MappingFragment StoreEntitySet="DTV_Moni_Estado">
+                <ScalarProperty Name="Clave" ColumnName="Clave" />
+                <ScalarProperty Name="Fecha_sys" ColumnName="Fecha_sys" />
+                <ScalarProperty Name="Fecha_Vcia" ColumnName="Fecha_Vcia" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+                <ScalarProperty Name="Desc_Corta" ColumnName="Desc_Corta" />
+                <ScalarProperty Name="Desc_Larga" ColumnName="Desc_Larga" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="IdEstado" ColumnName="IdEstado" />
+                <ScalarProperty Name="DescripEstado" ColumnName="DescripEstado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DTV_Moni_Integ">
+            <EntityTypeMapping TypeName="OcasaExtranetModel.DTV_Moni_Integ">
+              <MappingFragment StoreEntitySet="DTV_Moni_Integ">
+                <ScalarProperty Name="Clave" ColumnName="Clave" />
+                <ScalarProperty Name="Fecha_sys" ColumnName="Fecha_sys" />
+                <ScalarProperty Name="Fecha_Vcia" ColumnName="Fecha_Vcia" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+                <ScalarProperty Name="Desc_Corta" ColumnName="Desc_Corta" />
+                <ScalarProperty Name="Desc_Larga" ColumnName="Desc_Larga" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="IdIntegracion" ColumnName="IdIntegracion" />
+                <ScalarProperty Name="DescripIntegra" ColumnName="DescripIntegra" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DTV_Moni_Respon">
+            <EntityTypeMapping TypeName="OcasaExtranetModel.DTV_Moni_Respon">
+              <MappingFragment StoreEntitySet="DTV_Moni_Respon">
+                <ScalarProperty Name="Clave" ColumnName="Clave" />
+                <ScalarProperty Name="Fecha_sys" ColumnName="Fecha_sys" />
+                <ScalarProperty Name="Fecha_Vcia" ColumnName="Fecha_Vcia" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+                <ScalarProperty Name="Desc_Corta" ColumnName="Desc_Corta" />
+                <ScalarProperty Name="Desc_Larga" ColumnName="Desc_Larga" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="IdResponsable" ColumnName="IdResponsable" />
+                <ScalarProperty Name="DescripResponsa" ColumnName="DescripResponsa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

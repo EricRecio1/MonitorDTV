@@ -23,11 +23,11 @@ namespace ApiLogOcasa.Controllers
             try {
 
                 dbServices db = new dbServices();
-                records = db.ListLogsDetail(new StoredProcedure()
-                {
-                    name = "Monitor_ListarLog",
-                    parameters = AddParamenters(param)
-                });
+                //records = db.ListLogsDetail(new StoredProcedure()
+                //{
+                //    name = "Monitor_ListarLog",
+                //    parameters = AddParamenters(param)
+                //});
 
                 return request.CreateResponse(System.Net.HttpStatusCode.OK, records);
             }

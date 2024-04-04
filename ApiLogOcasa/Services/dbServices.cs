@@ -24,39 +24,38 @@ namespace ApiLogOcasa
 
             return true;
         }
-        public GenericResponse SaveMessageLog(StoredProcedure storedprocedure)
+        public void SaveChanges(string table, AddChange param)
         {
-            
             GenericResponse respuesta = new GenericResponse();
 
             try
             {
-                Connection();
-                SqlCommand com = new SqlCommand(storedprocedure.name, _Con);
+                string fechaCierre = "";
 
-                if (storedprocedure.parameters != null) { 
-                    foreach(StoredProcedureParameters param in storedprocedure.parameters)
-                    {
-                        com.Parameters.Add(param.name, param.type).Value = param.value;
-                    }
+                if (param.id_estado == 3)
+                {
+                    fechaCierre = DateTime.Today.ToString("dd/MM/yyyy");
                 }
-                com.CommandType = CommandType.StoredProcedure;
-                SqlDataAdapter da = new SqlDataAdapter(com);
 
-                DataTable dt = new DataTable();
+                Connection();
+
+                string query = "UPDATE DTV_Moni_Error SET ";
+                query += "IdResponsable = " + param.id_responsable;
+                query += ",IdEstado = " + param.id_estado;
+                query += ",Observacion = '" + param.observacion + "', ";
+                query += "FechaCierre = '" + fechaCierre + "' ";
+                query += "WHERE IdDocumento = " + param.id_docu;
+
                 _Con.Open();
-                da.Fill(dt);
+                SqlCommand com = new SqlCommand(query, _Con);
+                com.CommandType = CommandType.Text;
+                com.ExecuteNonQuery();
+                //SqlDataAdapter da = new SqlDataAdapter(com);
+                //SqlDataAdapter da = new SqlDataAdapter(com);
+                //DataTable dt = new DataTable();
+                //_Con.Open();
+                //da.Fill(dt);
                 _Con.Close();
-
-                respuesta = (from DataRow dr in dt.Rows
-                             select new GenericResponse()
-                             {
-                                 response = Convert.ToString(dr["Respuesta"] ?? ""),
-                                 description = Convert.ToString(dr["Descripcion"] ?? ""),
-                                 operation = Convert.ToString(dr["Respuesta"] ?? "").ToUpper() == "OK" ? true : false
-                             }).First();
-                
-
             }
             catch (Exception ex)
             {
@@ -66,72 +65,63 @@ namespace ApiLogOcasa
                 respuesta.description = ex.Message;
                 respuesta.operation = false;
             }
-            return respuesta;
+            //return respuesta;
         }
 
-        public GenericResponse Save(StoredProcedure storedprocedure)
+        public Records<DTV_Tabla_Error> ListErrors(StoredProcedure storedProcedure)
         {
-            GenericResponse respuesta = new GenericResponse();
-
+            Records<DTV_Tabla_Error> list = new Records<DTV_Tabla_Error>();
             try
             {
                 Connection();
-                SqlCommand com = new SqlCommand(storedprocedure.name, _Con);
-
-                if (storedprocedure.parameters != null)
-                {
-                    foreach (StoredProcedureParameters param in storedprocedure.parameters)
-                    {
-                        com.Parameters.Add(param.name, param.type).Value = param.value;
-                    }
-                }
+                //SqlCommand com = new SqlCommand("SELECT * FROM " + logErrores, _Con);
+                SqlCommand com = new SqlCommand(storedProcedure.name, _Con);
                 com.CommandType = CommandType.StoredProcedure;
                 SqlDataAdapter da = new SqlDataAdapter(com);
-
-                DataTable dt = new DataTable();
+                //DataTable dt = new DataTable();
+                DataSet dt = new DataSet();
+                com.Parameters.AddWithValue("@nroDoc", storedProcedure.parameters[0].value);
+                com.Parameters.AddWithValue("@estado", storedProcedure.parameters[1].value);
+                com.Parameters.AddWithValue("@fechaDesde", storedProcedure.parameters[2].value);
+                com.Parameters.AddWithValue("@fechaHasta", storedProcedure.parameters[3].value);
+                com.Parameters.AddWithValue("@idPais", storedProcedure.parameters[4].value);
+                com.Parameters.AddWithValue("@idIntegracion", storedProcedure.parameters[5].value);
                 _Con.Open();
                 da.Fill(dt);
                 _Con.Close();
-
-                respuesta = (from DataRow dr in dt.Rows
-                             select new GenericResponse()
-                             {
-                                 response = Convert.ToString(dr["Id"] ?? ""),
-                                 description = Convert.ToString(dr["Descripcion"] ?? ""),
-                                 operation = Convert.ToString(dr["Respuesta"] ?? "").ToUpper() == "OK" ? true : false
-                             }).First();
-
-
+    
+                list.items = (from DataRow dr in dt.Tables[0].Rows
+                                select new DTV_Tabla_Error()
+                                {
+                                    IdDocumento = decimal.TryParse((dr["IdDocumento"].ToString()), out decimal idDoc) ? idDoc : 0.0m,
+                                    FechaError = (dr["FechaError"].ToString()),
+                                    NombreArchivo = (dr["NombreArchivo"].ToString()),
+                                    DescripIntegra = (dr["DescripIntegra"].ToString()),
+                                    IdPais = (dr["IdPais"].ToString()),
+                                    Error = (dr["Error"].ToString()),
+                                    Estado = (dr["Estado"].ToString()),
+                                    DescripResponsa  = (dr["DescripResponsa"].ToString()),
+                                    FechaCierre = (dr["FechaCierre"].ToString()),
+                                    Observacion = (dr["Observacion"].ToString())
+                                }).ToList();
             }
             catch (Exception ex)
             {
                 if (_Con.State == ConnectionState.Open) _Con.Close();
                 error_message = ex.Message;
-                respuesta.response = "Error";
-                respuesta.description = ex.Message;
-                respuesta.operation = false;
             }
-            return respuesta;
+            return list;
         }
 
-        public Records<SummaryLogsResponse> ListLogs(StoredProcedure storedprocedure)
+        public Records<DTV_Moni_Respon> ListResponsable(string responsable)
         {
-            Records<SummaryLogsResponse> records = new Records<SummaryLogsResponse>();
-            List<SummaryLogsResponse> list = new List<SummaryLogsResponse>();
-
+            Records<DTV_Moni_Respon> list = new Records<DTV_Moni_Respon>();
             try
             {
                 Connection();
-                SqlCommand com = new SqlCommand(storedprocedure.name, _Con);
+                SqlCommand com = new SqlCommand("SELECT * FROM " + responsable, _Con);
 
-                if (storedprocedure.parameters != null)
-                {
-                    foreach (StoredProcedureParameters param in storedprocedure.parameters)
-                    {
-                        com.Parameters.Add(param.name, param.type).Value = param.value;
-                    }
-                }
-                com.CommandType = CommandType.StoredProcedure;
+                com.CommandType = CommandType.Text;
                 SqlDataAdapter da = new SqlDataAdapter(com);
 
                 DataTable dt = new DataTable();
@@ -139,64 +129,30 @@ namespace ApiLogOcasa
                 da.Fill(dt);
                 _Con.Close();
 
-                list = (from DataRow dr in dt.Rows
-                         select new SummaryLogsResponse()
-                         {
-                             id = int.Parse(dr["id"].ToString() ?? "0"),
-                             nombre = dr["nombre"].ToString() ?? "",
-                             activo = Boolean.Parse(dr["activo"].ToString()),
-                             cantidad_log = int.Parse(dr["cantidad_log"].ToString() ?? ""),
-                             criticidad = (dr["criticidad"]??"").ToString(),
-                             descripcion = (dr["descripcion"] ?? "").ToString(),
-                             servidor = (dr["servidor"] ?? "").ToString(),                             
-                             nivel = (dr["nivel"]==null?0: int.Parse(dr["nivel"].ToString() ?? "")),
-                             max_mensajes_error = (dr["max_mensajes_error"].ToString()==""?0:int.Parse(dr["max_mensajes_error"].ToString())),
-                             id_tipo_log = int.Parse(dr["id_tipo_log"].ToString() ?? "0"),
-                             tipo_log = (dr["tipo_log"] ?? "").ToString()
-
-                         }).ToList();
-                records.items = list;
-                records.count = list.Count();
+                list.items = (from DataRow dr in dt.Rows
+                              select new DTV_Moni_Respon()
+                              {
+                                  Clave = dr["Clave"].ToString(),
+                                  DescripResponsa = (dr["DescripResponsa"].ToString())
+                              }).ToList();
             }
             catch (Exception ex)
             {
                 if (_Con.State == ConnectionState.Open) _Con.Close();
-                error_message = ex.Message;                
+                error_message = ex.Message;
             }
-            return records;
+            return list;
         }
-
-        public Records<Log> ListLogsDetail(StoredProcedure storedprocedure)
+        //Lista de estados combobox
+        public Records<DTV_Moni_Estado> ListStates(string estados)
         {
-            Records<Log> records = new Records<Log>();
-            List<Log> list = new List<Log>();
-            DateTime ddt=new DateTime();
-
+            Records<DTV_Moni_Estado> list = new Records<DTV_Moni_Estado>();
             try
             {
                 Connection();
-                SqlCommand com = new SqlCommand(storedprocedure.name, _Con);
+                SqlCommand com = new SqlCommand("SELECT * FROM " + estados, _Con);
 
-                if (storedprocedure.parameters != null)
-                {
-                    foreach (StoredProcedureParameters param in storedprocedure.parameters)
-                    {
-                        switch(param.type)
-                        {
-                            case SqlDbType.DateTime:
-                            case SqlDbType.Date:
-                                
-                                DateTime.TryParseExact(param.value.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out ddt);
-                                com.Parameters.Add(param.name, param.type).Value = DateTime.Parse(param.value.ToString());
-                                break;
-                            default:
-                                com.Parameters.Add(param.name, param.type).Value = param.value;
-                                break;
-                        }
-                        
-                    }
-                }
-                com.CommandType = CommandType.StoredProcedure;
+                com.CommandType = CommandType.Text;
                 SqlDataAdapter da = new SqlDataAdapter(com);
 
                 DataTable dt = new DataTable();
@@ -204,51 +160,38 @@ namespace ApiLogOcasa
                 da.Fill(dt);
                 _Con.Close();
 
-                list = (from DataRow dr in dt.Rows
-                        select new Log()
+                list.items = (from DataRow dr in dt.Rows
+                        select new DTV_Moni_Estado()
                         {
-                            id = int.Parse(dr["id"].ToString() ?? "0"),
-                            id_aplicacion = int.Parse(dr["id_aplicacion"].ToString() ?? "0"),
-                            fecha = DateTime.Parse(dr["fecha"].ToString()),
-                            id_tipo_log = int.Parse(dr["id_tipo_log"].ToString() ?? "0"),
-                            descripcion = (dr["descripcion"] ?? "").ToString(),
-                            codigo_agrupador = (dr["codigo_agrupador"].ToString()),
-                            procedencia = (dr["procedencia"].ToString() ?? ""),
-                            descripcion_error = (dr["descripcion_error"] ?? "").ToString(),                            
-                            descripcion_paquete = (dr["descripcion_paquete"] ?? "").ToString(),
-                            descripcion_respuesta = (dr["descripcion_respuesta"] ?? "").ToString(),
-                            id_estado_log = Convert.ToInt32((dr["id_estado"] ?? "").ToString()),
-                            clave_estado_log = (dr["clave_estado"]).ToString(),
-                            descripcion_estado_log = (dr["descripcion_estado"]).ToString()
-                            
-
+                            Clave = dr["Clave"].ToString(),
+                            Fecha_sys = Convert.ToDateTime(dr["Fecha_sys"].ToString()),
+                            Fecha_Vcia = Convert.ToDateTime(dr["Fecha_Vcia"].ToString()),
+                            Usuario = (dr["Usuario"].ToString()),
+                            Desc_Corta = (dr["Desc_Corta"].ToString()),
+                            Desc_Larga = (dr["Desc_Larga"].ToString()),
+                            Estado = (dr["Estado"].ToString()),
+                            IdEstado = decimal.TryParse((dr["IdEstado"].ToString()), out decimal idEst) ? idEst : 0.0m,
+                            DescripEstado = (dr["DescripEstado"].ToString())
                         }).ToList();
-                records.items = list;
-                records.count = list.Count();
             }
             catch (Exception ex)
             {
                 if (_Con.State == ConnectionState.Open) _Con.Close();
                 error_message = ex.Message;
             }
-            return records;
+            return list;
         }
-        public Records<LogType> ListLogTypes(StoredProcedure storedprocedure)
+        //Lista de integracion
+
+        public Records<DTV_Moni_Integ> ListIntegracion(string integ)
         {
-            Records<LogType> records = new Records<LogType>();
-            List<LogType> list = new List<LogType>();
+            Records<DTV_Moni_Integ> list = new Records<DTV_Moni_Integ>();
             try
             {
                 Connection();
-                SqlCommand com = new SqlCommand(storedprocedure.name, _Con);
+                SqlCommand com = new SqlCommand("SELECT * FROM " + integ, _Con);
 
-                if (storedprocedure.parameters != null) { 
-                    foreach (StoredProcedureParameters param in storedprocedure.parameters)
-                    {
-                        com.Parameters.Add(param.name, param.type).Value = param.value;
-                    }
-                }
-                com.CommandType = CommandType.StoredProcedure;
+                com.CommandType = CommandType.Text;
                 SqlDataAdapter da = new SqlDataAdapter(com);
 
                 DataTable dt = new DataTable();
@@ -256,25 +199,30 @@ namespace ApiLogOcasa
                 da.Fill(dt);
                 _Con.Close();
 
-                list = (from DataRow dr in dt.Rows
-                             select new LogType()
-                             {
-                                 id = int.Parse(Convert.ToString(dr["id"] ?? "").ToString()),
-                                 description = Convert.ToString(dr["Descripcion"] ?? "")
-
-                             }).ToList();
-                records.items = list;
-                records.count = list.Count();
+                list.items = (from DataRow dr in dt.Rows
+                              select new DTV_Moni_Integ()
+                              {
+                                  Clave = dr["Clave"].ToString(),
+                                  Fecha_sys = Convert.ToDateTime(dr["Fecha_sys"].ToString()),
+                                  Fecha_Vcia = Convert.ToDateTime(dr["Fecha_Vcia"].ToString()),
+                                  Usuario = (dr["Usuario"].ToString()),
+                                  Desc_Corta = (dr["Desc_Corta"].ToString()),
+                                  Desc_Larga = (dr["Desc_Larga"].ToString()),
+                                  Estado = (dr["Estado"].ToString()),
+                                  IdIntegracion = decimal.TryParse((dr["IdIntegracion"].ToString()), out decimal idInt) ? idInt : 0.0m,
+                                  DescripIntegra = (dr["DescripIntegra"].ToString())
+                              }).ToList();
 
             }
             catch (Exception ex)
             {
                 if (_Con.State == ConnectionState.Open) _Con.Close();
-                error_message = ex.Message;                
+                error_message = ex.Message;
             }
-            return records;
+            return list;
         }
-        
+
+
         public Records<Application> ListApplications(StoredProcedure storedprocedure)
         {
             Records<Application> records = new Records<Application>();

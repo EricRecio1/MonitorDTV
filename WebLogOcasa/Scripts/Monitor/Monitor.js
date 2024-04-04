@@ -1,21 +1,40 @@
 ﻿// V a r i a b l e s    p u b l i c a s
 
-
 // PRD
-var url_api_logs = 'https://monitordelogsapi.ocasa.com/api/ListLogs';
-var url_api_logtype = 'https://monitordelogsapi.ocasa.com/api/ListTypesLog';
-var url_api_logs_detail = 'https://monitordelogsapi.ocasa.com/api/ListLogDetail';
-var url_api_apps = 'https://monitordelogsapi.ocasa.com/api/ListApplication';
-var url_api_update_state = 'https://monitordelogsapi.ocasa.com/api/UpdateLogState';
 
-// DEVELOP
-/*
-var url_api_logs = 'https://localhost:44361/api/ListLogs';
-var url_api_logtype = 'https://localhost:44361/api/ListTypesLog';
-var url_api_logs_detail = 'https://localhost:44361/api/ListLogDetail';
-var url_api_apps = 'https://localhost:44361/api/ListApplication';
-var url_api_apps = 'https://localhost:44361/api/UpdateLogState';
-*/
+//var url_api_logs = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListErrors';
+//var url_api_logtype = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListIntegracion';
+//var url_api_logs_detail = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListLogDetail';
+//var url_api_apps = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListStates';
+//var url_api_update_state = 'https://directvprd.ocasa.com/MonitorDtvApi/api/UpdateLogState';
+//var url_api_responsable = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListResponsable';
+//var url_api_responsable = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListResponsable';
+//var url_api_savechanges = 'https://directvprd.ocasa.com/MonitorDtvApi/api/SaveChanges';
+////var url_api_savedocument = 'https://localhost:44354/AsnTeorico/GuardarArchivo';
+//var url_api_savedocument = 'https://directvprd.ocasa.com/Integracion-Dtv/AsnTeorico/GuardarArchivo';
+
+
+//DEVELOP
+//var url_api_logs = 'https://localhost:44361/api/ListErrors';
+//var url_api_logtype = 'https://localhost:44361/api/ListIntegracion';
+//var url_api_logs_detail = 'https://localhost:44361/api/ListLogDetail';
+//var url_api_apps = 'https://localhost:44361/api/ListStates';
+//var url_api_update_state = 'https://localhost:44361/api/UpdateLogState';
+//var url_api_responsable = 'https://localhost:44361/api/ListResponsable';
+//var url_api_savechanges = 'https://localhost:44361/api/SaveChanges';
+//var url_api_savedocument = 'https://localhost:44354/AsnTeorico/GuardarArchivo'
+
+//Qas
+
+var url_api_logs = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListErrors';
+var url_api_logtype = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListIntegracion';
+var url_api_logs_detail = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListLogDetail';
+var url_api_apps = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListStates';
+var url_api_update_state = 'https://directvqas.ocasa.com/MonitorDtvApi/api/UpdateLogState';
+var url_api_responsable = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListResponsable';
+var url_api_savechanges = 'https://directvqas.ocasa.com/MonitorDtvApi/api/SaveChanges';
+var url_api_savedocument = 'https://directvqas.ocasa.com/Integracion-Dtv/AsnTeorico/GuardarArchivo';
+//var url_api_savedocument = 'https://localhost:44354//GuardarArchivo';
 
 var today = new Date();
 
@@ -41,115 +60,120 @@ let idClockInterval = 0;
 
 const records = [];
 
+let estados;
+let responsables;
+
 SetDateToSearch(dd+'/'+mm+'/'+yyyy);
 
-
-
 $(document).ready(function () {
-   InitializeControls();
-   
+    InitializeControls();
+
+    $('#datepickerDesde').datepicker({
+        locale: 'es',
+        autoclose: true,
+        todayHighlight: true,
+        autoclose: true,
+        endDate: '+1d',
+        datesDisabled: '+1d',
+        orientation: "top",
+        format: 'dd/mm/yyyy',
+        keyboardNavigation: true
+    });
+    $('#datepickerHasta').datepicker({
+        locale: 'es',
+        autoclose: true,
+        todayHighlight: true,
+        autoclose: true,
+        endDate: '+1d',
+        datesDisabled: '+1d',
+        orientation: "top",
+        format: 'dd/mm/yyyy',
+        keyboardNavigation: true
+    });
+    var cargando = $("#cargando");
+    $(document).ajaxStart(function () {
+        cargando.show();
+    });
+    $(document).ajaxStop(function () {
+        cargando.hide();
+    });
+
 });
 
 // F U N C I O N E S 
 
-$(function () {
-   /*$('#datepicker').defaults = {
-      dayViewHeaderFormat: 'MMMM YYYY',
-      locale: 'es',
-      endDate: '+1d',
-      todayHighlight: true,
-      format: true,
-      autoclose: true
-   }*/
-   $('#datepicker').datepicker({
-      locale: 'es',
-      autoclose: true,
-      todayHighlight: true,
-      autoclose: true,
-      endDate: '+1d',
-      datesDisabled: '+1d',
-      keyboardNavigation: true
-   });
-});
-
-
 function InitializeControls() {
 
-   LoadLogType();
-   LoadApps();
-   LoadLogs();
+    LoadIntegracion();
+    LoadEstados();
+    LoadResponsable();
+    LoadErrores('0');
+
+    //style.disabled = true;
    // Setea el intervalo para la consulta del log
-   idLogInterval=setInterval(LoadLogs, refresh_interval * 1000);
+   //idLogInterval=setInterval(LoadLogs, refresh_interval * 1000);
    // Setea el intervalo para la consulta del reloj
-   idClockInterval=setInterval(ShowClock, refresh_clock_interval * 1000);
-   
+   //idClockInterval=setInterval(ShowClock, refresh_clock_interval * 1000);
+   //interval_legend = Get_legend_interval(refresh_interval);
+   //$('#intervalo').html(interval_legend);
 
-   interval_legend = Get_legend_interval(refresh_interval);
-   $('#intervalo').html(interval_legend);
 
-   $('#btnReload').click(function () {      
-      LoadLogs();
-   });
-   $('#datepicker').change(function (e) {
-      SetDateToSearch($('#fecha').val());      
-      LoadLogs();
-      
-   });
-  
-   
-
-   $('#tInterval').change(function () {
-      refresh_interval = this.value;
-      interval_legend = Get_legend_interval(refresh_interval);
-      $('#intervalo').html(interval_legend);
-
-      clearInterval(idLogInterval);
-      SetLogParameter();
-      idLogInterval=setInterval(LoadLogs, refresh_interval * 1000);
-   });
-   $('#tInterval').on('input', function () {
-      refresh_interval = this.value;
-      interval_legend = Get_legend_interval(refresh_interval);
-      $('#intervalo').html(interval_legend);
+   $('#buscar').click(function () {      
+       LoadErrores("1");
    });
 
-   $('.combobox').combobox();
-
-   // bonus: add a placeholder
-   $('.combobox').attr('placeholder', 'Nombre aplicación');
    $('#combo_app').change(function () {
       LoadLogs();
    });
    $('#combo_typelog').change(function () {
       LoadLogs();
    });
+
 }
 
-function LoadLogs() {
+function LoadErrores(init) {
 
-   var html = '';
+    let html = '';
+    let nroDoc = '';
+    let estado = '';
+    let fechaDesde = '';
+    let fechaHasta = '';
+    let pais = '';
+    let integracion = '';
+
+    if (init == 0) {
+        nroDoc = '0';
+        estado = '0';
+        fechaDesde = '';
+        fechaHasta = '';
+        pais = '0';
+        integracion = '0';
+    }
+    else {
+        nroDoc = $('#nroDoc').val();
+        pais = $('#combo_paises').val();
+        estado = $('#combo_app').val();
+        integracion = $('#combo_integracion').val();
+        fechaDesde = $('#datepickerDesde').val();
+        fechaHasta = $('#datepickerHasta').val();
+
+        $('#datepickerDesde').val('');
+        $('#datepickerHasta').val('');
+
+        if ((new Date(fechaDesde).getTime() >= new Date(fechaHasta).getTime())) {
+            alert("Fecha Desde no puede ser mayor o igual a Fecha Hasta");
+            $('#datepickerDesde').val('');
+            $('#datepickerHasta').val('');    
+        }
+    }
+
    // Obtiene los valores de los parámetros
-   var id_logtype = (type_option !== id_logtype && type_option !== undefined ? type_option:id_logtype);
-   var date = $('#fecha').val();
-
-   id_application = $("#combo_app option:selected").val();
-   id_logtype = $("#combo_typelog option:selected").val();
-  
-   let datesql = '';
-   // Validaciones de parametros
-   if (date === '' || date === undefined)
-      datesql = formattedDateSQL;
-   else {
-      let [day, month, year] = date.split('/')
-      datesql = year + '-' + month + '-' + day;
-   }
-
-   if (id_logtype === '' || id_logtype === undefined)
-      id_logtype = 0;
+   //var id_logtype = (type_option !== id_logtype && type_option !== undefined ? type_option:id_logtype);
+   // var id_logtype = (type_option !== id_logtype && type_option !== undefined ? type_option : id_logtype);
+   //var date = $('#fechaDesde').val();
 
    html = GetHtmlSpinner();
    $('#data').html(html);
-
    $('#message').html('<span class="text-primary">Consultando logs del ' + formattedDateScreen +'</span>');
 
    $.ajax({
@@ -157,46 +181,45 @@ function LoadLogs() {
       contentType: 'application/json; charset=utf-8',
       url: url_api_logs,
       data: JSON.stringify({
-         'id_tipo_log': id_logtype,
-         'fecha': datesql,
-         'id_aplicacion': id_application
+          'nroDoc': nroDoc,
+          'estado': estado,
+          'fechaDesde': fechaDesde,
+          'fechaHasta': fechaHasta,
+          'pais': pais,
+          'integracion': integracion
       }),
       dataType: "json"
    }).done(function (data) {
 
-      $('#data').append('');
+       $('#data').append('');
 
-      if (data != "") {
+       if (data != "") {
 
-         /*var records = JSON.parse(data);*/
-         var index = 0;
-         var records_count = 0;
-         //var cantidad_columnas = CANT_COLUMNAS + 1;  // Para forzar la primer fila
-         var html_row = '';
-         var color = '';
+        var index = 0;
+        var records_count = 0;
+        //var cantidad_columnas = CANT_COLUMNAS + 1;  // Para forzar la primer fila
+        var html_row = '';
+        var color = '';
 
-         var id = '';
-         var name = '';
-         var active = '';
-         var description = '';
-         var max_error_message = 0;
-         var id_log_type = 0;
-         var log_count = 0;
-         var critical = '';
-         var level = 0;
-         var server = '';
-         var log_type = '';
-         var search = '';
-
-         var actual_time = new Date();
-         let yyyy = actual_time.getFullYear();
-         let MM = actual_time.getMonth() + 1; // Months start at 0!
-         let dd = actual_time.getDate();
-         let hh = actual_time.getHours();
-         let mm = actual_time.getMinutes();
-         let ss = actual_time.getSeconds();
-         let formattedTimeScreen = pad(2, hh, '0') + ':' + pad(2, mm, '0') + ':' + pad(2, ss, '0');
-
+        var Estado = '';
+        var IdDocumento = '';
+        var FechaError = 0;
+        let NombreArchivo = "";
+        var Integracion = '';
+        var IdPais = '';
+        var Estado = '';
+        var Responsable = '';
+        var FechaCierre = '';
+        var Error = '';
+        var Observacion = '';
+        var actual_time = new Date();
+        let yyyy = actual_time.getFullYear();
+        let MM = actual_time.getMonth() + 1; // Months start at 0!
+        let dd = actual_time.getDate();
+        let hh = actual_time.getHours();
+        let mm = actual_time.getMinutes();
+        let ss = actual_time.getSeconds();
+        let formattedTimeScreen = pad(2, hh, '0') + ':' + pad(2, mm, '0') + ':' + pad(2, ss, '0');
          let date = $('#fecha').val();
          let datesql = '';
          // Validaciones de parametros
@@ -207,139 +230,160 @@ function LoadLogs() {
             datesql = year + '-' + month + '-' + day;
          }
 
+           $('#data').empty();
 
-         $('#data').empty();
-         let exists = Object.keys(data).includes('response');
-         if (exists) {
-            $('#data').empty();
-
-            html_row = '<div class="row ' + color + '" style="border: 1px solid; border-color:#BBB2B0;">';
-            html_row += '  <div class="col-sm-12 xsmall" style="border 1px solid;">'
-            html_row += '     <span>Se produjo el siguiente error<span></br>';
-            html_row += '     <span>' + data.description + '<span>';
-            html_row += '  </div>';
-            html_row += '</div>';
-
-            $('#data').append(html_row);
-            return;
-         }
-
-         if (data.items.length > 0) {
+           if (data.items != null) {
 
             html_row = '<br/>';
             html_row += '<div class="row xxsmall" style="border:1px solid; border-color:#BBB2B0; padding-bottom:2px;padding-top:2px;" >';
             html_row += '     <div class="col-lg-12"><span class="text-bold">Actualizado a las ' + formattedTimeScreen +'</span></div>';
-            html_row += '</div>';
-         //   html_row += '<div class="row small" style="border:1px solid; border-color:#BBB2B0; padding-bottom:2px;padding-top:2px;" >';
-         //   html_row += '     <div class="col-lg-1"><span class="text-bold">ID</span></div>';
-         //   html_row += '     <div class="col-lg-2"><span class="text-bold">NOMBRE</span></div>';
-         //   //html_row += '     <div class="col-sm-1"><span class="text-bold">Activo</span></div>';
-         //   html_row += '     <div class="col-lg-4"><span class="text-bold">Descripcion</span></div>';
-         //   html_row += '     <div class="col-lg-1"><span class="text-bold">Max. mjes</span></div>';
-         //   html_row += '     <div class="col-lg-1"><span class="text-bold">Criticidad</span></div>';
-         //   html_row += '     <div class="col-lg-1"><span class="text-bold">Servidor</span></div>';
-         //   html_row += '     <div class="col-lg-1"><span class="text-bold">Mjes.</span></div>';
-         //   html_row += '     <div class="col-lg-1"><span class="text-bold">Tipo</span></div>';
-         //   html_row += '</div>';
+            
+             html_row += '<table class="table table-editable" style="border:1px solid; border-color:#BBB2B0; padding-bottom:2px;padding-top:2px;" >';
 
+             html_row += '<thead>';
+             html_row += '<tr>';
+             html_row += '     <th scope="col">Nro Documento</span></th>';
+             html_row += '     <th scope="col">Fecha de Error</span></th>';
+             html_row += '     <th scope="col">Nombre de Archivo</span></th>';
+             html_row += '     <th scope="col">Integracion</span></th>';
+             html_row += '     <th scope="col">Pais</span></th>';
+             html_row += '     <th scope="col">Error</span></th>';
+             html_row += '     <th scope="col">Estado</span></th>';
+             html_row += '     <th scope="col">Responsable</span></th>';
+             html_row += '     <th scope="col">Fecha de Cierre</span></th>';
+             html_row += '     <th scope="col">Observacion</span></th>';
+             html_row += '     <th scope="col" style="padding-left: 25px; padding-right: 25px">Acciones</span></th>';
+             html_row += '</tr></thead>';
          }
-
-
-         //var ciclos = 0;
-         records_count = data.count;
-
+           //var ciclos = 0;
+           if (data.items != null) {
+               records_count = data.items.length;
+           }
          if (records_count > 0) {
 
             while (index < data.items.length) {
 
                records_count++;
 
-               id = data.items[index].id;
-               name = data.items[index].nombre;
-               active = data.items[index].activo;
-               description = data.items[index].descripcion;
-               max_error_message = data.items[index].max_mensajes_error;
-               id_log_type = data.items[index].id_tipo_log;
-               log_count = data.items[index].cantidad_log;
-               critical = data.items[index].criticidad;
-               level = data.items[index].nivel;
-               server = data.items[index].servidor;
-               log_type = data.items[index].tipo_log;
+                Clave = data.items[index].Clave;
+                Fecha_sys = data.items[index].Fecha_sys;
+                Fecha_Vcia = data.items[index].Fecha_Vcia;
+                Usuario = data.items[index].Usuario;
+                Desc_Corta = data.items[index].Desc_Corta;
+                Desc_Larga = data.items[index].Desc_Larga;
+                Estado = data.items[index].Estado;
+                IdDocumento = data.items[index].IdDocumento;
+                FechaError = data.items[index].FechaError;
+                NombreArchivo = data.items[index].NombreArchivo;
+                Integracion = data.items[index].DescripIntegra;
+                IdPais = data.items[index].IdPais;
+                Responsable = data.items[index].DescripResponsa;
+                FechaCierre = data.items[index].FechaCierre;
+                Error = data.items[index].Error;
+                Observacion = data.items[index].Observacion;
 
                color = 'text-info';
 
-               if (level === 1) color = 'text-info';
-               if (level === 2) color = 'text-warning';
-               if (level === 3) color = 'text-danger';
+               //if (level === 1) color = 'text-info';
+               //if (level === 2) color = 'text-warning';
+               //if (level === 3) color = 'text-danger';
 
-               html_row += '<div id="' + id + '" class="row ' + color + '" style="border: 1px solid; border-color:#BBB2B0;">';
+               //html_row += '<tbody id="' + Clave + '" class="row ' + color + '" style="border: 1px solid; border-color:#BBB2B0;">';
+                html_row += '<tbody>';
 
-               html_row += '<div class="col-lg-1 xsmall" style="border 0px solid;">'
-               html_row += '     <span class="xxsmall text-dark">ID:</span><br/><span>' + id + '<span>';
-               html_row += '</div>';
+                html_row += '<tr>';
 
-               html_row += '<div class="col-lg-2 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">NOMBRE:</span><br/><span style="cursor:pointer;">' + name + '<span>';
-               html_row += '</div>';
+                html_row += '<td>'
+                html_row += '     <span style="cursor:pointer;">' + IdDocumento + '<span>';
+                html_row += '</td>';
 
-               //html_row += '<div class="col-sm-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               //html_row += '     <span>' + (active == true ? 'Activo' : '-') + '<span>';
-               //html_row += '</div>';
+                html_row += '<td>'
+                html_row += '     <span>' + FechaError + '<span>';
+                html_row += '</td>';
 
-               html_row += '<div class="col-lg-4 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">DESCRIPCION:</span><br/><span>' + description + '<span>';
-               html_row += '</div>';
+                html_row += '<td>'
+                html_row += NombreArchivo;
+                html_row += '</td>';
 
-               //html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               //html_row += '     <span class="xxsmall text-dark">MAX MJS:</span><br/><span class="text-center">' + max_error_message + '<span>';
-               //html_row += '</div>';
+                html_row += '<td>'
+                html_row += '     <span>' + Integracion + '<span>';
+                html_row += '</td>';
 
-               html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">CRITICIDAD:</span><br/><span ' + (level == 3 ? 'class="blink"' : '') + ' >' + critical + '<span>';
-               html_row += '</div>';
+                html_row += '<td>'
+                html_row += '     <span>' + IdPais + '<span>';
+                html_row += '</td>';
 
-               html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">SERVIDOR:</span><br/><span>' + server + '<span>';
-               html_row += '</div>';
+                html_row += '<td>'
+                html_row +=  Error;
+                html_row += '</td>';
 
-               html_row += '<div class="col-lg-1 xsmall text-right" style="border 1px solid; border-color:#BBB2B0;">'
-               html_row += '     <span class="xxsmall text-dark">MJES:</span><br/><span class="h6">' + log_count + '<span>';
-               html_row += '</div>';
-               html_row += '<div class="col-lg-1 xsmall" style="border 1px solid; border-color:#BBB2B0; cursor:pointer;" onclick="ShowLogsDetails(' + id + ',\'' + name + '\',\'' + datesql + '\',' + id_log_type + ',\'' + search + '\');">'
-               html_row += '     <span class="xxsmall text-dark">TIPO:</span><br/><span>' + log_type + '<span>';
-               html_row += '</div>';                                                                           // app_id, date, log_type, search
-               //         html_row += '<div class="col-sm-3" style="border:0px solid; border-color:#000000; padding-left:5px; padding-right:5px; width:350px;">';
+                html_row += '<td>';
+                html_row += '<select class="form-control form-control-sm estado" iddocu="' + IdDocumento+'" onchange="onChange(this)">';
+                for (var i = 0; i < estados.length; i++) {
 
+                    if (Estado == estados[i].DescripEstado) {
+                        html_row += '  <option selected value="' + estados[i].Clave + '">' + estados[i].DescripEstado + '</option>';
+                    }
+                    else {
+                        html_row += '  <option value="' + estados[i].Clave + '">' + estados[i].DescripEstado + '</option>';
+                    }
+                }
+                html_row += '</select>';
+                html_row += '</td>';
 
-               //         html_row += '       <div class="row" style="border:0px solid; border-color:#d1cbcc; height:30%; max-height:30%;">';
-               //         html_row += '           <div class="col-sm-12"></div>';
-               //         html_row += '       </div>';
-               //         html_row += '       <div class="row" style="border:0px solid; border-color:#d1cbcc; height:30%; max-height:30%;">';
-               //         html_row += '           <div class="col-sm-12">';
-               //         html_row += '               <span class="shadow" style="font-size:18pt; font-weight:bold; background-color:rgba(255, 0, 0, 0.3); color:#ffffff; text-shadow: 2px 2px 3px #000000;">&nbsp;' + name + '&nbsp;</span>';
-               //         html_row += '           </div>';
-               //         html_row += '       </div>';
-               //         html_row += '       <div class="row" style="border:0px solid; border-color:#d1cbcc; height:30%; max-height:30%;display: block;">';
-               //         html_row += '           <div class="col-sm-12" style="text-align:right;"><span class="Publi_text bold" style="background-color:rgba(255, 0, 0, 0.3); color:#ffffff; text-shadow: 2px 2px 3px #000000;">&nbsp;&nbsp;' + Cantidad + '&nbsp;&nbsp;</span></div>';
-               //         html_row += '       </div>';
-               //         html_row += '       <div class="overlay" >';
-               //         html_row += '           <center>';
-               //         html_row += '               <span style="color:#ffffff;"><strong>Seleccion&aacute; esta opci&oacute;n para ver los cursos de ' + name + '</strong></span>';
-               //         html_row += '               <br/><br/><br/>';
-               //         html_row += '               <span class="h3" style="color:#ffffff;"><strong>' + Cantidad + (Cantidad == 1 ? ' curso' : ' cursos') + ' disponibles</strong></span>';
-               //         html_row += '           </center >';
-               //         html_row += '       </div >;'
+                html_row += '<td>'
+                html_row += '<select class="form-control form-control-sm responsable" iddocu="' + IdDocumento +'" onchange="onChange(this)">';
+                
+                for (let i = 0; i < responsables.length; i++) {
+                    if (Responsable == responsables[i].DescripResponsa) {
+                        html_row += '  <option selected value="' + responsables[i].Clave + '">' + responsables[i].DescripResponsa + '</option>';
+                    }
+                    else {
+                        html_row += '  <option value="' + responsables[i].Clave + '">' + responsables[i].DescripResponsa + '</option>';
+                    }
+                }
 
-               html_row += '   </div>';
-               index++;
+                html_row += '</select>';
+                html_row += '</td>';
 
-            }
+                html_row += '<td>'
+                html_row += '     <span>' + FechaCierre + '<span>';
+                html_row += '</td>';
 
-            // Cierra la fila
-            //if (records.items.length > 0)
-            html_row += '</div>';
+                html_row += '<td cursor:pointer;" id="obs' + IdDocumento + '" detail="' + Observacion + '" onkeydown="EnableButton(' + IdDocumento + ')">'
+                //html_row += Observacion;
+                html_row += '<a href="#ex1" rel="modal:open" type="button" onClick="ShowObservacion( ' + IdDocumento + ')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search manual-ajax observacion" viewBox="0 0 16 16" disabled>'
+                html_row += '<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg></a>'
+                html_row += '</td>';
+                //onclick = "ShowLogsDetails(' + Clave + ',\'' + Usuario + '\',\'' + Fecha_Vcia + '\',' + IdDocumento + '\');
+                html_row += '<td>'
 
-         } else {
+                html_row += '<button class"svg-button" style="background-color: white; border:0" onclick="GuardarCambio(' + IdDocumento + ')" id="edit' + IdDocumento + '" disabled>'
+                html_row += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">'
+                html_row += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>'
+                html_row += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>'
+                html_row += '</svg>'
+                html_row += '</button>'
+                //html_row += '<button type="button" class="btn btn-light btn-rounded btn-sm my-0" onclick="GuardarCambio(' + IdDocumento + ')"  id="edit' + IdDocumento + '" disabled>'
+                //html_row += 'Editar </button>'
+                html_row += '<button class"svg-button" style="background-color: white; border:0" onclick="DescargarDocumento(\'' + NombreArchivo + '\')">'
+                html_row += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16" >'
+                html_row += ' <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>'
+                html_row += '<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>'
+                html_row += '</svg>'
+                html_row += '</button>'
+                
+                html_row += '</td>';
+             
+                index++;
+             }
+
+            html_row += '</tbody>';
+            html_row += '</table>';
+
+             html_row += '</div>';
+         }
+         else {
             $('#data').empty();
 
             html_row = '<div class="row ' + color + '" style="border: 1px solid; border-color:#BBB2B0;">';
@@ -347,11 +391,9 @@ function LoadLogs() {
             html_row += '     <span>No se encontraron registros para el ' + formattedDateScreen + ' actualizado a las ' + formattedTimeScreen + '<span>';
             html_row += '  </div>';
             html_row += '</div>';
-          
          }
 
          $('#data').append(html_row);
-
 
          //var script_java =
          //   '<script>' +
@@ -383,13 +425,10 @@ function LoadLogs() {
             
       $('#message').html('<span class="text-danger blink">falla en la conexión ' + VerifyErrorType(jqXHR) +'</span>');
    });
-
-
    
 }
 
 function LoadLogsDetail(app_id, date, id_log_type, search) {
-
 
    $.ajax({
       type: 'POST',
@@ -406,7 +445,6 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
 
       if (data != "") {
 
-         
          let exists = Object.keys(data).includes('response');
 
          if (exists) {
@@ -454,9 +492,7 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
          //   html_row += '     <div class="col-md-8"><span class="text-bold">Descripción</span></div>';
          //   html_row += '     <div class="col-md-3"><span class="text-bold">Origen</span></div>';
          //   html_row += '</div>';
-
          //}
-
 
          //var ciclos = 0;
          records_count = data.count;
@@ -556,7 +592,6 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
 
                html_row += '   </div>';
                index++;
-
             }
             
             html_row += '<div class="row mt-4"><div class="col-sm-12"><button class="btn btn-light small w-100 border border-primary" style="height:25px;padding-top:0px;" onclick="DownloadLogDetail()"><span class="small">Descargar Logs</span></button></div></div>';
@@ -577,8 +612,6 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
          }
 
          $('#data-detail').append(html_row);
-
-
          
       } else {
          $('#data-detail').empty();
@@ -598,14 +631,36 @@ function LoadLogsDetail(app_id, date, id_log_type, search) {
    });
 
 }
+function DescargarDocumento(nombre_documento) {
+    var _nombre_documento = nombre_documento.replace(":", '');
 
-function LoadApps() {
+    $.ajax({
+        url: url_api_savedocument,
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify( nombre_documento ),
+        success: (function (data) {
+            var blob = new Blob([data], { type: 'application/octet-stream' });
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = _nombre_documento;
+            document.body.appendChild(link);
+            link.click();
+            window.URL.revokeObjectURL(link);
+        })
+    })
+}
+
+
+function LoadResponsable() {
    var a = '';
 
-   $.ajax({
+    $.ajax({
+      async: false,
       type: 'GET',
       contentType: 'application/json; charset=utf-8',
-      url: url_api_apps,
+      url: url_api_responsable,
       //data: JSON.stringify({
       //   'id_tipo_log': id_tipo_log,
       //   'fecha': fecha
@@ -613,53 +668,94 @@ function LoadApps() {
       dataType: "json"
    }).done(function (data) {
 
-      if (data != "") {
+       if (data != "") {
+           responsables = data.items;
 
-         $('#combo_app').empty();
+         // var index = 0;
+         //var id = '';
+         //var estado = '';
 
-         /*var records = JSON.parse(data);*/
-         var index = 0;
-         var records_count = 0;
-         //var cantidad_columnas = CANT_COLUMNAS + 1;  // Para forzar la primer fila
-         var html_row = '';
-         /* var color = '';*/
+         //var html_row_respon = '';
 
-         var id = '';
-         var nombre = '';
+         ////var ciclos = 0;
+         //records_count = data.count;
 
-         //var ciclos = 0;
-         records_count = data.count;
+         //while (index < data.items.length) {
 
-         while (index < data.items.length) {
+         //   records_count++;
+         //   if (index == 0)
+         //       html_row_respon += '<option value="0">Todos</option>';
+         //    id = data.items[index].id;
+         //    estado = data.items[index].DescripEstado;
 
-            records_count++;
-            if (index == 0)
-               html_row += '<option value="0">Todas las aplicaciones</option>';
-            id = data.items[index].id;
-            nombre = data.items[index].nombre;
+         //    html_row_respon += '<option value="' + id +'">'+estado+'</option>';
+         //   index++;
+         //}
 
-            html_row += '<option value="' + id +'">'+nombre+'</option>';
-
-            index++;
-
-         }
-
-         $('#combo_app').html(html_row);
-
-
-
-
-      } else {
-         $('#combo_app').empty();
-
-      }
+      } 
 
    }).fail(function (d) {
 
-      $('#message').html('<span class="text-danger blink">falla en la conexión aplicaciones</span>');
+      $('#message').html('<span class="text-danger blink">falla en la conexion con responsables</span>');
    });
 }
-function LoadLogType() {
+
+function LoadEstados() {
+    var a = '';
+
+    $.ajax({
+        async: false,
+        type: 'GET',
+        contentType: 'application/json; charset=utf-8',
+        url: url_api_apps,
+        //data: JSON.stringify({
+        //   'id_tipo_log': id_tipo_log,
+        //   'fecha': fecha
+        //}),
+        dataType: "json"
+    }).done(function (data) {
+
+        if (data != "") {
+
+            estados = data.items;
+            $('#combo_app').empty();
+
+            var index = 0;
+
+            var id = '';
+            var estado = '';
+
+            var html_row_estado = '';
+
+            //var ciclos = 0;
+            records_count = data.count;
+
+            while (index < data.items.length) {
+
+                records_count++;
+                if (index == 0)
+                    html_row_estado += '<option value="0">Todos</option>';
+                id = data.items[index].IdEstado;
+                estado = data.items[index].DescripEstado;
+
+                html_row_estado += '<option value="' + id + '">' + estado + '</option>';
+                index++;
+            }
+
+            $('#combo_app').html(html_row_estado);
+
+        } else {
+            $('#combo_app').empty();
+
+        }
+
+    }).fail(function (d) {
+
+        $('#message').html('<span class="text-danger blink">falla en la conexión aplicaciones</span>');
+    });
+}
+
+function LoadIntegracion() {
    var a = '';
 
    $.ajax({
@@ -675,19 +771,13 @@ function LoadLogType() {
 
       if (data != "") {
 
-         $('#combo_typelog').empty();
+          $('#combo_integracion').empty();
 
-         /*var records = JSON.parse(data);*/
          var index = 0;
-         var records_count = 0;
-         //var cantidad_columnas = CANT_COLUMNAS + 1;  // Para forzar la primer fila
          var html_row = '';
-         /* var color = '';*/
-
          var id = '';
-         var description = '';
+          var description = '';
 
-         //var ciclos = 0;
          records_count = data.count;
 
          while (index < data.items.length) {
@@ -695,23 +785,21 @@ function LoadLogType() {
             records_count++;
 
             if (index == 0) {
-               html_row += '<option value="0">Todos los tipos</option>';
+               html_row += '<option value="0">Todos</option>';
             }
 
-
-            id = data.items[index].id;
-            description = data.items[index].description;
+            id = data.items[index].IdIntegracion;
+            description = data.items[index].DescripIntegra;
 
             //html_row += '<span class="dropdown-item cursor-pointer" id="' + id + '" onclick="SelectType(' + id + ',`' + description +'`)">' + description + '</span>';
             html_row += '<option value="' + id + '"  >' + description + '</option>';
 
             index++;
-
          }
 
-         $('#typelog').append(html_row);
+         //$('#typelog').append(html_row);
 
-         $('#combo_typelog').html(html_row);
+          $('#combo_integracion').html(html_row);
 
 
       } else {
@@ -723,6 +811,54 @@ function LoadLogType() {
 
       $('#message').html('<span class="text-danger blink">falla en la conexión aplicaciones</span>');
    });
+}
+
+function onChange(docu) {
+    var idDocu = $(docu).attr('iddocu')
+    $("button[id=edit" + idDocu + "]").attr("disabled", false);
+}
+
+function EnableButton(idDocu) {
+    $("button[id=edit" + idDocu + "]").attr("disabled", false);
+}
+
+//$('#guardar-observacion').click(function () {
+//    $("td[id=obs" + idDocumento + "]").attr("detail").val($(".observacion").val());
+//});
+
+function ShowObservacion(idDocumento) {
+    let observacion = $("td[id=obs" + idDocumento + "]").attr("detail");
+    $(".observacion").val(observacion);
+    $(".observacion").attr("idDocumentoEdit", idDocumento);
+}
+
+function GuardarCambio(idDocu) {
+    //var idDocu = $(docu).attr('iddocu')
+    var responsEdit = $("select.responsable[iddocu=" + idDocu + "]").val();
+    var estadoEdit = $("select.estado[iddocu=" + idDocu + "]").val();
+    var observacionEdit = $("td[id=obs" + idDocu + "]").attr("detail");
+    
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        url: url_api_savechanges,
+        data: JSON.stringify({
+            'id_docu': idDocu,
+            'id_estado': estadoEdit,
+            'id_responsable': responsEdit,
+            'observacion': observacionEdit
+        }),
+        dataType: "json"
+    }).done(function (data) {
+        if (data != "") {
+            $("button[id=edit" + idDocu + "]").attr("disabled", true);
+            //$("#contenedor").load("#contenedor");
+            setInterval(LoadErrores("0"), 0);
+        }
+    }).fail(function (fail) {
+        PopupDetail('popup_message', 'No fue posible actualizar el estado del log ' + id, 'data-detail', 'sm');
+
+    });
 }
 
 function ChangeStateLog(control, id, clave_estado) {
@@ -758,10 +894,6 @@ function ChangeStateLog(control, id, clave_estado) {
       
    });
 
-
-
-
-   
 }
 function ShowClock() {
 
@@ -785,6 +917,34 @@ function ShowClock() {
       ("0" + h).substr(-2) + ":" + ("0" + m).substr(-2) + ":" + ("0" + s).substr(-2);
 
    $('#clock').html('<span>Hoy ' + textContent + '</span>');
+}
+
+function DescargarArchivo(idDocu) {
+    var responsEdit = $("select.responsable[iddocu=" + idDocu + "]").val();
+    var estadoEdit = $("select.estado[iddocu=" + idDocu + "]").val();
+    var observacionEdit = $("td[id=obs" + idDocu + "]").attr("detail");
+
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        url: url_api_savechanges,
+        data: JSON.stringify({
+            'id_docu': idDocu,
+            'id_estado': estadoEdit,
+            'id_responsable': responsEdit,
+            'observacion': observacionEdit
+        }),
+        dataType: "json"
+    }).done(function (data) {
+        if (data != "") {
+            $("button[id=edit" + idDocu + "]").attr("disabled", true);
+            //$("#contenedor").load("#contenedor");
+            setInterval(LoadErrores("0"), 0);
+        }
+    }).fail(function (fail) {
+        PopupDetail('popup_message', 'No fue posible actualizar el estado del log ' + id, 'data-detail', 'sm');
+
+    });
 }
 
 function SetDateToSearch(sdate) {
@@ -965,4 +1125,13 @@ function VerifyErrorType(jqXHR) {
 
    }
    return (message);
+}
+
+function GuardarObservacion() {
+    let observacion = $("input[iddocumentoedit]").val();
+    let idDocu = $("input[id=input-observacion]").attr("iddocumentoedit");
+    $("td[id=obs" + idDocu + "]").attr("detail", observacion);
+    $("#ex1 .close-modal").click()
+    GuardarCambio(idDocu);
+    //setInterval(LoadErrores("0"), 0);
 }

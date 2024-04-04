@@ -7,10 +7,10 @@ namespace ApiLogOcasa
 {
     public class LogTypeList
     {
-        public List<LogType> Types { get; set; }
-        public LogTypeList()
-        {
-            Types = new List<LogType>();
-        }
+        //public List<LogType> Types { get; set; }
+        //public LogTypeList()
+        //{
+        //    Types = new List<LogType>();
+        //}
     }
 }

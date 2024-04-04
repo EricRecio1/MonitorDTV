@@ -11,40 +11,40 @@ namespace ApiLogOcasa.Controllers
     public class AddServerController : ApiController
     {
         [Route("api/AddServer")]
-        public HttpResponseMessage AddServer(ServerRequest param)
-        {
-            HttpRequestMessage request = this.ActionContext.Request;
-            GenericResponse ret;
+        //public HttpResponseMessage AddServer(ServerRequest param)
+        //{
+        //    HttpRequestMessage request = this.ActionContext.Request;
+        //    GenericResponse ret;
 
-            try
-            {
-                // 1. Verificar estructura de param
-
-
-                // 2. Insertar 
-                dbServices db = new dbServices();
-                ret = db.Save(new StoredProcedure()
-                {
-                    name = "Monitor_AgregarServidor",
-                    parameters = AddParamenters(param)
-                });
+        //    try
+        //    {
+        //        // 1. Verificar estructura de param
 
 
-                return request.CreateResponse(System.Net.HttpStatusCode.OK, ret);
+        //        // 2. Insertar 
+        //        dbServices db = new dbServices();
+        //        //ret = db.Save(new StoredProcedure()
+        //        //{
+        //        //    name = "Monitor_AgregarServidor",
+        //        //    parameters = AddParamenters(param)
+        //        //});
 
-            }
-            catch (Exception ex)
-            {
-                ret = new GenericResponse()
-                {
-                    response = "Error",
-                    description = ex.Message,
-                    operation = false
-                };
-                return request.CreateResponse(System.Net.HttpStatusCode.BadRequest, ret);
-            }
 
-        }
+        //        return request.CreateResponse(System.Net.HttpStatusCode.OK, ret);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ret = new GenericResponse()
+        //        {
+        //            response = "Error",
+        //            description = ex.Message,
+        //            operation = false
+        //        };
+        //        return request.CreateResponse(System.Net.HttpStatusCode.BadRequest, ret);
+        //    }
+
+        //}
 
 
         private List<StoredProcedureParameters> AddParamenters(ServerRequest param)
@@ -96,10 +96,6 @@ namespace ApiLogOcasa.Controllers
 
                 throw new Exception("Error en la estructura de parámetros");
             }
-            
-
         }
-
-
     }
 }

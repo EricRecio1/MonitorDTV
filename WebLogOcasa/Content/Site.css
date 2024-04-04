@@ -103,3 +103,43 @@ Full screen Modal
    src: url('../fonts/Montserrat-VariableFont_wght.ttf');
 }
 
+#ex1 {
+    position: relative;
+    width: 100%;
+    height: 60%;
+}
+
+#ex1 a.close-modal {
+    position: absolute;
+    top: 23px;
+    right: 30px;
+}
+
+#ex1 .btn-success {
+    position: absolute;
+    bottom: 5%;
+    right: 43%;
+}
+
+#ex1 .text-center {
+    position: absolute;
+    top: 25%;
+    right: 20px;
+    left: 20%;
+}
+
+.spinner-border {
+    display: block;
+    position: fixed;
+    z-index: 1031; /* High z-index so it is on top of the page */
+    top: 50%;
+    right: 50%; /* or: left: 50%; */
+    /*margin-top: -..px;*/ /* half of the elements height */
+    /*margin-right: -..px;*/ /* half of the elements width */
+}
+
+.text-left {
+    text-align: left;
+    position: absolute;
+    right: 0%;
+}
