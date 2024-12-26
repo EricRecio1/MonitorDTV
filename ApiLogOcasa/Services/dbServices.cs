@@ -73,17 +73,19 @@ namespace ApiLogOcasa
             Records<DTV_Tabla_Error> list = new Records<DTV_Tabla_Error>();
             try
             {
+                string fechad = storedProcedure.parameters[2].value.ToString();
+                string fechah = storedProcedure.parameters[3].value.ToString();
+
                 Connection();
-                //SqlCommand com = new SqlCommand("SELECT * FROM " + logErrores, _Con);
                 SqlCommand com = new SqlCommand(storedProcedure.name, _Con);
                 com.CommandType = CommandType.StoredProcedure;
                 SqlDataAdapter da = new SqlDataAdapter(com);
                 //DataTable dt = new DataTable();
                 DataSet dt = new DataSet();
-                com.Parameters.AddWithValue("@nroDoc", storedProcedure.parameters[0].value);
+                com.Parameters.AddWithValue("@nroDoc", Convert.ToInt64(storedProcedure.parameters[0].value));
                 com.Parameters.AddWithValue("@estado", storedProcedure.parameters[1].value);
-                com.Parameters.AddWithValue("@fechaDesde", storedProcedure.parameters[2].value);
-                com.Parameters.AddWithValue("@fechaHasta", storedProcedure.parameters[3].value);
+                com.Parameters.AddWithValue("@fechaDesde", fechad);
+                com.Parameters.AddWithValue("@fechaHasta", fechah);
                 com.Parameters.AddWithValue("@idPais", storedProcedure.parameters[4].value);
                 com.Parameters.AddWithValue("@idIntegracion", storedProcedure.parameters[5].value);
                 _Con.Open();
@@ -93,7 +95,7 @@ namespace ApiLogOcasa
                 list.items = (from DataRow dr in dt.Tables[0].Rows
                                 select new DTV_Tabla_Error()
                                 {
-                                    IdDocumento = decimal.TryParse((dr["IdDocumento"].ToString()), out decimal idDoc) ? idDoc : 0.0m,
+                                    IdDocumento = (Convert.ToInt64(dr["IdDocumento"])),
                                     FechaError = (dr["FechaError"].ToString()),
                                     NombreArchivo = (dr["NombreArchivo"].ToString()),
                                     DescripIntegra = (dr["DescripIntegra"].ToString()),

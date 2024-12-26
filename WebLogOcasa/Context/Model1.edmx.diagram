@@ -5,10 +5,10 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="d17cf04023964e24afacac22d0bdb067" Name="Diagram1">
-        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Error" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Estado" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
-        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Integ" Width="1.5" PointX="0.75" PointY="7.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Respon" Width="1.5" PointX="0.75" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Error" Width="1.75" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Estado" Width="1.875" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Integ" Width="2" PointX="0.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="OcasaExtranetModel.DTV_Moni_Respon" Width="2" PointX="0.75" PointY="10.875" IsExpanded="true" />
         <AssociationConnector Association="OcasaExtranetModel.FK__DTV_Moni___IdEst__360EFAD2" ManuallyRouted="false" />
         <AssociationConnector Association="OcasaExtranetModel.FK__DTV_Moni___IdInt__37F74344" ManuallyRouted="false" />
         <AssociationConnector Association="OcasaExtranetModel.FK__DTV_Moni___IdRes__38EB677D" ManuallyRouted="false" />

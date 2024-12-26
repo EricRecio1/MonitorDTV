@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 
 namespace ApiLogOcasa.Models
@@ -6,7 +7,7 @@ namespace ApiLogOcasa.Models
     public class LogListRequest
     {
         [JsonProperty("nroDoc")]
-        public int nroDoc { get; set; }
+        public Int64 nroDoc { get; set; }
 
         [JsonProperty("estado")]
         public string estado { get; set; }
@@ -21,6 +22,6 @@ namespace ApiLogOcasa.Models
         public string pais { get; set; }
 
         [JsonProperty("integracion")]
-        public decimal integracion { get; set; }
+        public string integracion { get; set; }
     }
 }

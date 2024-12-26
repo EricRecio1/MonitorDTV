@@ -2,38 +2,38 @@
 
 // PRD
 
-//var url_api_logs = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListErrors';
-//var url_api_logtype = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListIntegracion';
-//var url_api_logs_detail = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListLogDetail';
-//var url_api_apps = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListStates';
-//var url_api_update_state = 'https://directvprd.ocasa.com/MonitorDtvApi/api/UpdateLogState';
-//var url_api_responsable = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListResponsable';
-//var url_api_responsable = 'https://directvprd.ocasa.com/MonitorDtvApi/api/ListResponsable';
-//var url_api_savechanges = 'https://directvprd.ocasa.com/MonitorDtvApi/api/SaveChanges';
+//var url_api_logs = 'https://monitorapi-dtv.ocasa.com/api/ListErrors';
+//var url_api_logtype = 'https://monitorapi-dtv.ocasa.com/api/ListIntegracion';
+//var url_api_logs_detail = 'https://monitorapi-dtv.ocasa.com/api/ListLogDetail';
+//var url_api_apps = 'https://monitorapi-dtv.ocasa.com/api/ListStates';
+//var url_api_update_state = 'https://monitorapi-dtv.ocasa.com/api/UpdateLogState';
+//var url_api_responsable = 'https://monitorapi-dtv.ocasa.com/api/ListResponsable';
+//var url_api_responsable = 'https://monitorapi-dtv.ocasa.com/api/ListResponsable';
+//var url_api_savechanges = 'https://monitorapi-dtv.ocasa.com/api/SaveChanges';
 ////var url_api_savedocument = 'https://localhost:44354/AsnTeorico/GuardarArchivo';
-//var url_api_savedocument = 'https://directvprd.ocasa.com/Integracion-Dtv/AsnTeorico/GuardarArchivo';
+//var url_api_savedocument = 'https://integracionocasadtv2.ocasa.com/AsnTeorico/GuardarArchivo';
 
 
 //DEVELOP
-//var url_api_logs = 'https://localhost:44361/api/ListErrors';
-//var url_api_logtype = 'https://localhost:44361/api/ListIntegracion';
-//var url_api_logs_detail = 'https://localhost:44361/api/ListLogDetail';
-//var url_api_apps = 'https://localhost:44361/api/ListStates';
-//var url_api_update_state = 'https://localhost:44361/api/UpdateLogState';
-//var url_api_responsable = 'https://localhost:44361/api/ListResponsable';
-//var url_api_savechanges = 'https://localhost:44361/api/SaveChanges';
-//var url_api_savedocument = 'https://localhost:44354/AsnTeorico/GuardarArchivo'
+var url_api_logs = 'https://localhost:44361/api/ListErrors';
+var url_api_logtype = 'https://localhost:44361/api/ListIntegracion';
+var url_api_logs_detail = 'https://localhost:44361/api/ListLogDetail';
+var url_api_apps = 'https://localhost:44361/api/ListStates';
+var url_api_update_state = 'https://localhost:44361/api/UpdateLogState';
+var url_api_responsable = 'https://localhost:44361/api/ListResponsable';
+var url_api_savechanges = 'https://localhost:44361/api/SaveChanges';
+var url_api_savedocument = 'https://localhost:44354/AsnTeorico/GuardarArchivo'
 
 //Qas
 
-var url_api_logs = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListErrors';
-var url_api_logtype = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListIntegracion';
-var url_api_logs_detail = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListLogDetail';
-var url_api_apps = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListStates';
-var url_api_update_state = 'https://directvqas.ocasa.com/MonitorDtvApi/api/UpdateLogState';
-var url_api_responsable = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListResponsable';
-var url_api_savechanges = 'https://directvqas.ocasa.com/MonitorDtvApi/api/SaveChanges';
-var url_api_savedocument = 'https://directvqas.ocasa.com/Integracion-Dtv/AsnTeorico/GuardarArchivo';
+//var url_api_logs = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListErrors';
+//var url_api_logtype = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListIntegracion';
+//var url_api_logs_detail = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListLogDetail';
+//var url_api_apps = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListStates';
+//var url_api_update_state = 'https://directvqas.ocasa.com/MonitorDtvApi/api/UpdateLogState';
+//var url_api_responsable = 'https://directvqas.ocasa.com/MonitorDtvApi/api/ListResponsable';
+//var url_api_savechanges = 'https://directvqas.ocasa.com/MonitorDtvApi/api/SaveChanges';
+//var url_api_savedocument = 'https://directvqas.ocasa.com/Integracion-Dtv/AsnTeorico/GuardarArchivo';
 //var url_api_savedocument = 'https://localhost:44354//GuardarArchivo';
 
 var today = new Date();
@@ -97,7 +97,6 @@ $(document).ready(function () {
     $(document).ajaxStop(function () {
         cargando.hide();
     });
-
 });
 
 // F U N C I O N E S 
@@ -117,22 +116,23 @@ function InitializeControls() {
    //interval_legend = Get_legend_interval(refresh_interval);
    //$('#intervalo').html(interval_legend);
 
-
    $('#buscar').click(function () {      
        LoadErrores("1");
    });
 
    $('#combo_app').change(function () {
-      LoadLogs();
+       //LoadLogs();
+       LoadErrores(1);
    });
-   $('#combo_typelog').change(function () {
-      LoadLogs();
+   $('#combo_paises').change(function () {
+       LoadErrores(1);
    });
-
+    $('#combo_integracion').change(function () {
+        LoadErrores(1);
+    });
 }
 
 function LoadErrores(init) {
-
     let html = '';
     let nroDoc = '';
     let estado = '';
@@ -146,7 +146,7 @@ function LoadErrores(init) {
         estado = '0';
         fechaDesde = '';
         fechaHasta = '';
-        pais = '0';
+        pais = '';
         integracion = '0';
     }
     else {
@@ -154,33 +154,40 @@ function LoadErrores(init) {
         pais = $('#combo_paises').val();
         estado = $('#combo_app').val();
         integracion = $('#combo_integracion').val();
-        fechaDesde = $('#datepickerDesde').val();
-        fechaHasta = $('#datepickerHasta').val();
 
-        $('#datepickerDesde').val('');
-        $('#datepickerHasta').val('');
+        let formatearFecha = $('#datepickerDesde').val().split('/');
 
-        if ((new Date(fechaDesde).getTime() >= new Date(fechaHasta).getTime())) {
-            alert("Fecha Desde no puede ser mayor o igual a Fecha Hasta");
-            $('#datepickerDesde').val('');
-            $('#datepickerHasta').val('');    
+        if (formatearFecha != '') {
+            let year = formatearFecha[2];
+            //let month = formatearFecha[1] - 1;
+            let month = formatearFecha[1];
+            let day = formatearFecha[0];
+            fechaDesde = day + '-' + month + '-' + year;
+            formatearFecha = $('#datepickerHasta').val().split('/')
+            year = formatearFecha[2];
+            //month = formatearFecha[1] - 1;
+            month = formatearFecha[1];
+            day = formatearFecha[0];
+            fechaHasta = day + '-' + month + '-' + year;
+
+            if (new Date(fechaDesde) > new Date(fechaHasta)) {
+                alert("Fecha Desde no puede ser mayor a Fecha Hasta");
+                $('#datepickerDesde').val('');
+                $('#datepickerHasta').val('');
+            }
         }
     }
 
-   // Obtiene los valores de los parámetros
-   //var id_logtype = (type_option !== id_logtype && type_option !== undefined ? type_option:id_logtype);
-   // var id_logtype = (type_option !== id_logtype && type_option !== undefined ? type_option : id_logtype);
-   //var date = $('#fechaDesde').val();
+    html = GetHtmlSpinner();
 
-   html = GetHtmlSpinner();
-   $('#data').html(html);
-   $('#message').html('<span class="text-primary">Consultando logs del ' + formattedDateScreen +'</span>');
+    $('#data').html(html);
+    $('#message').html('<span class="text-primary">Consultando logs del ' + formattedDateScreen + '</span>');
 
-   $.ajax({
-      type: 'POST',
-      contentType: 'application/json; charset=utf-8',
-      url: url_api_logs,
-      data: JSON.stringify({
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        url: url_api_logs,
+        data: JSON.stringify({
           'nroDoc': nroDoc,
           'estado': estado,
           'fechaDesde': fechaDesde,
@@ -195,144 +202,133 @@ function LoadErrores(init) {
 
        if (data != "") {
 
-        var index = 0;
-        var records_count = 0;
-        //var cantidad_columnas = CANT_COLUMNAS + 1;  // Para forzar la primer fila
-        var html_row = '';
-        var color = '';
-
-        var Estado = '';
-        var IdDocumento = '';
-        var FechaError = 0;
-        let NombreArchivo = "";
-        var Integracion = '';
-        var IdPais = '';
-        var Estado = '';
-        var Responsable = '';
-        var FechaCierre = '';
-        var Error = '';
-        var Observacion = '';
-        var actual_time = new Date();
-        let yyyy = actual_time.getFullYear();
-        let MM = actual_time.getMonth() + 1; // Months start at 0!
-        let dd = actual_time.getDate();
-        let hh = actual_time.getHours();
-        let mm = actual_time.getMinutes();
-        let ss = actual_time.getSeconds();
-        let formattedTimeScreen = pad(2, hh, '0') + ':' + pad(2, mm, '0') + ':' + pad(2, ss, '0');
-         let date = $('#fecha').val();
-         let datesql = '';
-         // Validaciones de parametros
-         if (date === '' || date === undefined)
-            datesql = formattedDateSQL;
-         else {
-            let [day, month, year] = date.split('/')
-            datesql = year + '-' + month + '-' + day;
-         }
+           let index = 0;
+           let records_count = 0;
+           let html_row = '';
+           let color = '';
+           let Estado = '';
+           let IdDocumento = '';
+           let FechaError = 0;
+           let NombreArchivo = '';
+           let Integracion = '';
+           let IdPais = '';
+           //let Estado = '';
+           let Responsable = '';
+           let FechaCierre = '';
+           let error = '';
+           let Observacion = '';
+           let actual_time = new Date();
+           let yyyy = actual_time.getFullYear();
+           let MM = actual_time.getMonth() + 1; // Months start at 0!
+           let dd = actual_time.getDate();
+           let hh = actual_time.getHours();
+           let mm = actual_time.getMinutes();
+           let ss = actual_time.getSeconds();
+           let formattedTimeScreen = pad(2, hh, '0') + ':' + pad(2, mm, '0') + ':' + pad(2, ss, '0');
+           let date = $('#fecha').val();
+           let datesql = '';
+           // Validaciones de parametros
+           if (date === '' || date === undefined)
+               datesql = formattedDateSQL;
+           else {
+               let [day, month, year] = date.split('/')
+               datesql = year + '-' + month + '-' + day;
+           }
 
            $('#data').empty();
 
            if (data.items != null) {
 
-            html_row = '<br/>';
-            html_row += '<div class="row xxsmall" style="border:1px solid; border-color:#BBB2B0; padding-bottom:2px;padding-top:2px;" >';
-            html_row += '     <div class="col-lg-12"><span class="text-bold">Actualizado a las ' + formattedTimeScreen +'</span></div>';
-            
-             html_row += '<table class="table table-editable" style="border:1px solid; border-color:#BBB2B0; padding-bottom:2px;padding-top:2px;" >';
-
-             html_row += '<thead>';
-             html_row += '<tr>';
-             html_row += '     <th scope="col">Nro Documento</span></th>';
-             html_row += '     <th scope="col">Fecha de Error</span></th>';
-             html_row += '     <th scope="col">Nombre de Archivo</span></th>';
-             html_row += '     <th scope="col">Integracion</span></th>';
-             html_row += '     <th scope="col">Pais</span></th>';
-             html_row += '     <th scope="col">Error</span></th>';
-             html_row += '     <th scope="col">Estado</span></th>';
-             html_row += '     <th scope="col">Responsable</span></th>';
-             html_row += '     <th scope="col">Fecha de Cierre</span></th>';
-             html_row += '     <th scope="col">Observacion</span></th>';
-             html_row += '     <th scope="col" style="padding-left: 25px; padding-right: 25px">Acciones</span></th>';
-             html_row += '</tr></thead>';
-         }
-           //var ciclos = 0;
+               html_row = '<br/>';
+               html_row += '<div class="row xxsmall" style="border:1px solid; border-color:#BBB2B0; padding-bottom:2px;padding-top:2px;">';
+               html_row += '     <div class="col-lg-12"><span class="text-bold">Actualizado a las ' + formattedTimeScreen +'</span></div>';
+               html_row += '<table class="table table-editable" style="border:1px solid; border-color:#BBB2B0; padding-bottom:2px;padding-top:2px;" >';
+               html_row += '<thead>';
+               html_row += '<tr>';
+               html_row += '     <th scope="col">Nro Documento</span></th>';
+               html_row += '     <th scope="col">Fecha de Error</span></th>';
+               html_row += '     <th scope="col">Nombre de Archivo</span></th>';
+               html_row += '     <th scope="col">Integracion</span></th>';
+               html_row += '     <th scope="col">Pais</span></th>';
+               html_row += '     <th scope="col">Error</span></th>';
+               html_row += '     <th scope="col">Estado</span></th>';
+               html_row += '     <th scope="col">Responsable</span></th>';
+               html_row += '     <th scope="col">Fecha de Cierre</span></th>';
+               html_row += '     <th scope="col">Observacion</span></th>';
+               html_row += '     <th scope="col" style="padding-left: 25px; padding-right: 25px">Acciones</span></th>';
+               html_row += '</tr></thead>';
+           }
            if (data.items != null) {
                records_count = data.items.length;
            }
-         if (records_count > 0) {
+           if (records_count > 0) {
+               while (index < data.items.length) {
+                   records_count++;
+                   Clave = data.items[index].Clave;
+                   Fecha_sys = data.items[index].Fecha_sys;
+                   Fecha_Vcia = data.items[index].Fecha_Vcia;
+                   Usuario = data.items[index].Usuario;
+                   Desc_Corta = data.items[index].Desc_Corta;
+                   Desc_Larga = data.items[index].Desc_Larga;
+                   Estado = data.items[index].Estado;
+                   IdDocumento = data.items[index].IdDocumento;
+                   FechaError = data.items[index].FechaError;
+                   NombreArchivo = data.items[index].NombreArchivo;
+                   Integracion = data.items[index].DescripIntegra;
+                   IdPais = data.items[index].IdPais;
+                   Responsable = data.items[index].DescripResponsa;
+                   FechaCierre = data.items[index].FechaCierre;
+                   error = data.items[index].Error;
+                   Observacion = data.items[index].Observacion;
 
-            while (index < data.items.length) {
-
-               records_count++;
-
-                Clave = data.items[index].Clave;
-                Fecha_sys = data.items[index].Fecha_sys;
-                Fecha_Vcia = data.items[index].Fecha_Vcia;
-                Usuario = data.items[index].Usuario;
-                Desc_Corta = data.items[index].Desc_Corta;
-                Desc_Larga = data.items[index].Desc_Larga;
-                Estado = data.items[index].Estado;
-                IdDocumento = data.items[index].IdDocumento;
-                FechaError = data.items[index].FechaError;
-                NombreArchivo = data.items[index].NombreArchivo;
-                Integracion = data.items[index].DescripIntegra;
-                IdPais = data.items[index].IdPais;
-                Responsable = data.items[index].DescripResponsa;
-                FechaCierre = data.items[index].FechaCierre;
-                Error = data.items[index].Error;
-                Observacion = data.items[index].Observacion;
-
-               color = 'text-info';
+                   color = 'text-info';
 
                //if (level === 1) color = 'text-info';
                //if (level === 2) color = 'text-warning';
                //if (level === 3) color = 'text-danger';
 
-               //html_row += '<tbody id="' + Clave + '" class="row ' + color + '" style="border: 1px solid; border-color:#BBB2B0;">';
-                html_row += '<tbody>';
+                   html_row += '<t<body>';
+                   html_row += '<tr>';
 
-                html_row += '<tr>';
+                   html_row += '<td>'
+                   html_row += '     <span style="cursor:pointer;">' + IdDocumento + '<span>';
+                   html_row += '</td>';
 
-                html_row += '<td>'
-                html_row += '     <span style="cursor:pointer;">' + IdDocumento + '<span>';
-                html_row += '</td>';
+                   html_row += '<td>'
+                   html_row += '     <span>' + FechaError + '<span>';
+                   html_row += '</td>';
 
-                html_row += '<td>'
-                html_row += '     <span>' + FechaError + '<span>';
-                html_row += '</td>';
+                   html_row += '<td>'
+                   html_row += NombreArchivo;
+                   html_row += '</td>';
 
-                html_row += '<td>'
-                html_row += NombreArchivo;
-                html_row += '</td>';
+                   html_row += '<td>'
+                   html_row += '     <span>' + Integracion + '<span>';
+                   html_row += '</td>';
 
-                html_row += '<td>'
-                html_row += '     <span>' + Integracion + '<span>';
-                html_row += '</td>';
+                   html_row += '<td>'
+                   html_row += '     <span>' + IdPais + '<span>';
+                   html_row += '</td>';
 
-                html_row += '<td>'
-                html_row += '     <span>' + IdPais + '<span>';
-                html_row += '</td>';
+                   html_row += '<td>'
+                   html_row +=  error;
+                   html_row += '</td>';
 
-                html_row += '<td>'
-                html_row +=  Error;
-                html_row += '</td>';
+                   html_row += '<td>';
+                   html_row += '<select class="form-control form-control-sm estado" iddocu="' + IdDocumento+'" onchange="onChange(this)">';
+                   for (var i = 0; i < estados.length; i++) {
 
-                html_row += '<td>';
-                html_row += '<select class="form-control form-control-sm estado" iddocu="' + IdDocumento+'" onchange="onChange(this)">';
-                for (var i = 0; i < estados.length; i++) {
-
-                    if (Estado == estados[i].DescripEstado) {
-                        html_row += '  <option selected value="' + estados[i].Clave + '">' + estados[i].DescripEstado + '</option>';
-                    }
-                    else {
-                        html_row += '  <option value="' + estados[i].Clave + '">' + estados[i].DescripEstado + '</option>';
-                    }
-                }
-                html_row += '</select>';
-                html_row += '</td>';
-
-                html_row += '<td>'
-                html_row += '<select class="form-control form-control-sm responsable" iddocu="' + IdDocumento +'" onchange="onChange(this)">';
+                       if (Estado == estados[i].IdEstado) {
+                           html_row += '  <option selected value="' + estados[i].Clave + '">' + estados[i].DescripEstado + '</option>';
+                       }
+                       else {
+                           html_row += '  <option value="' + estados[i].Clave + '">' + estados[i].DescripEstado + '</option>';
+                       }
+                   }
+                   html_row += '</select>';
+                   html_row += '</td>';
+                   html_row += '<td>'
+                   html_row += '<select class="form-control form-control-sm responsable" iddocu="' + IdDocumento +'" onchange="onChange(this)">';
                 
                 for (let i = 0; i < responsables.length; i++) {
                     if (Responsable == responsables[i].DescripResponsa) {
@@ -377,10 +373,8 @@ function LoadErrores(init) {
              
                 index++;
              }
-
-            html_row += '</tbody>';
-            html_row += '</table>';
-
+             html_row += '</tbody>';
+             html_row += '</table>';
              html_row += '</div>';
          }
          else {
@@ -393,21 +387,7 @@ function LoadErrores(init) {
             html_row += '</div>';
          }
 
-         $('#data').append(html_row);
-
-         //var script_java =
-         //   '<script>' +
-         //   // Funcion para cursor sobre imagen
-         //   '   function CargarPaginaCursos(id,name){' +
-         //   '       localStorage.setItem(\'idSeleccionada\', id);' +
-         //   '       localStorage.setItem(\'nameAreaSeleccionada\', name);' +
-         //   '       window.location.href=\'./Cursos.aspx\'' +
-         //   '       ' +
-         //   '   }' +
-         //   '</script>';
-
-         //// Agrega el javascript para las acciones
-         //$('#grillaAreas').append(script_java);
+           $('#data').append(html_row);
 
       } else {
          $('#data').empty();
@@ -635,6 +615,7 @@ function DescargarDocumento(nombre_documento) {
     var _nombre_documento = nombre_documento.replace(":", '');
 
     $.ajax({
+        async: false,
         url: url_api_savedocument,
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
@@ -770,12 +751,11 @@ function LoadIntegracion() {
    }).done(function (data) {
 
       if (data != "") {
-
           $('#combo_integracion').empty();
 
-         var index = 0;
-         var html_row = '';
-         var id = '';
+          var index = 0;
+          var html_row = '';
+          var id = '';
           var description = '';
 
          records_count = data.count;

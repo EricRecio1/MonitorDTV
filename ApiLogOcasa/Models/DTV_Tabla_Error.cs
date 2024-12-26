@@ -7,7 +7,7 @@ namespace ApiLogOcasa.Models
 {
     public class DTV_Tabla_Error
     {
-        public decimal IdDocumento { get; set; }
+        public Int64 IdDocumento { get; set; }
         public string FechaError { get; set; }
         public string NombreArchivo { get; set; }
         public string DescripIntegra { get; set; }

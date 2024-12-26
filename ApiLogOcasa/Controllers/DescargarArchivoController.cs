@@ -8,17 +8,18 @@ using System.Net.Http;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace ApiLogOcasa.Controllers
 {
+    //[EnableCors(origins: "https://localhost:44351,https://localhost:443,https://monitor-dtv.ocasa.com:443,https://monitor-dtv.ocasa.com", headers: "*", methods: "*")]
     public class DescargarArchivoController : ApiController
-    {
-        string[] folders;
-
+    { 
         [HttpPost]
-        [Route("api/GuardarArchivo")]
-        public HttpResponseMessage GuardarArchivo(string nombre_documento)
+        [Route("api/DescargarArchivo")]
+        public HttpResponseMessage DescargarArchivo(string nombre_documento)
         {
+            string[] folders;
             HttpRequestMessage request = this.ActionContext.Request;
 
             folders = new string[] {
@@ -40,53 +41,53 @@ namespace ApiLogOcasa.Controllers
             {
                 if (item.Name.Contains(nombreCorto))
                 {
-                    Download(item.Name, nombre_documento);
+                    //Download(item.Name, nombre_documento);
+                    string host = @"ftp.dtvpan.com";
+                    string username = "ocasa_prod";
+                    string password = "A9Y1&U07M9yA9";
+                    int port = 22;
+
+                    using (SftpClient sftp = new SftpClient(host, port, username, password))
+                    {
+                        sftp.Connect();
+                    }
                 }
             }
-
-            //foreach (var item in folders)
-            //{
-            //    if (item.Contains(nombreCorto))
-            //    {
-            //        Download(item, nombre_documento);
-            //    }
-            //}
             return request.CreateResponse(System.Net.HttpStatusCode.OK);
         }
-        
-        public void Download(string path, string fileName) 
-        { 
-            string host = @"ftp.dtvpan.com";
-            string username = "ocasa_prod";
-            string password = "A9Y1&U07M9yA9";
-            int port = 22;
+        //public void Download(string path, string fileName) 
+        //{ 
+        //    string host = @"ftp.dtvpan.com";
+        //    string username = "ocasa_prod";
+        //    string password = "A9Y1&U07M9yA9";
+        //    int port = 22;
             
-            using (SftpClient sftp = new SftpClient(host, port, username, password))
-            {
-                sftp.Connect();
+        //    using (SftpClient sftp = new SftpClient(host, port, username, password))
+        //    {
+        //        sftp.Connect();
 
-                //IEnumerable<SftpFile> res = (idPais == "AR") ? client.ListDirectory(_configuration[path]) : client.ListDirectory(_configuration[path + "_" + idPais]);
+        //        //IEnumerable<SftpFile> res = (idPais == "AR") ? client.ListDirectory(_configuration[path]) : client.ListDirectory(_configuration[path + "_" + idPais]);
               
-                //var fileFound = res.Where(x => x.Name == fileName).FirstOrDefault();
+        //        //var fileFound = res.Where(x => x.Name == fileName).FirstOrDefault();
 
-                //foreach (var file in files)
-                //{
-                //    if (!file.Name.StartsWith("."))
-                //    {
-                //        string remoteFileName = file.Name;
-                //        if (file.LastWriteTime.Date == DateTime.Today)
+        //        //foreach (var file in files)
+        //        //{
+        //        //    if (!file.Name.StartsWith("."))
+        //        //    {
+        //        //        string remoteFileName = file.Name;
+        //        //        if (file.LastWriteTime.Date == DateTime.Today)
 
-                //            Console.WriteLine(file.FullName);
+        //        //            Console.WriteLine(file.FullName);
 
-                //        File.OpenWrite(localFileName);
+        //        //        File.OpenWrite(localFileName);
 
-                //        string sDir = @"localpath";
+        //        //        string sDir = @"localpath";
 
-                //        Stream file1 = File.OpenRead(remoteDirectory + file.Name);
-                //        sftp.DownloadFile(remoteDirectory, file1);
-                //    }
-                //}
-            }       
-        }
+        //        //        Stream file1 = File.OpenRead(remoteDirectory + file.Name);
+        //        //        sftp.DownloadFile(remoteDirectory, file1);
+        //        //    }
+        //        //}
+        //    }       
+        //}
     }
 }

@@ -62,9 +62,8 @@
                 <label for="staticPais" class="col-sm-2 col-form-label">Pais: </label>
             </div>
             <div class="col-lg-2">
-                <!--<input type="text" class="form-control" aria-describedby="passwordHelpInline">-->
                 <select class="form-control col-lg-12" id="combo_paises">
-                    <option value="0">Todos</option>
+                    <option value="">Todos</option>
                     <option value="AR">Argentina</option>
                     <option value="UY">Uruguay</option>
                 </select>
@@ -123,15 +122,6 @@
                 <span class="sr-only">Loading...</span>
             </div>
 
-            <!-- Cabecera -->
-            <!--Barra intervalo-->
-            <!--<div class="col-lg-2 pt-1 text-center xsmall">
-        <div data-role="rangeslider">
-            <label for="tInterval" class="xxsmall">Refresco en&nbsp;</label><span id="intervalo" class="xxsmall"></span><br />
-            <input type="range" class="text-primary" name="tInterval" id="tInterval" value="10" min="10" max="600" tabindex="3">
-        </div>
-    </div>-->
-            <!-- Logs -->
             <br />
             <div id="contenedor" class="container" style="border:0px solid; overflow:auto; max-height:1000px;">
                 <div id="data" class="p-2"></div>
@@ -143,10 +133,6 @@
             <button type="submit" class="btn btn-success guardarobservacion" onclick="GuardarObservacion()">Guardar</button>
         </div>
 
-        <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">-->
-        <!--<button type="button" class="btn btn-primary" data-toggle="modal" onclick="PopupDetail('log_detail');">
-       Launch demo modal
-    </button>-->
 
         <div id="popup_log_detail"></div>
         <div id="popup_message"></div>

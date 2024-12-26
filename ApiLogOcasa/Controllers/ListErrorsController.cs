@@ -7,10 +7,9 @@ using System.Web.Http.Cors;
 
 namespace ApiLogOcasa.Controllers
 {
-    [EnableCors(origins: "https://localhost:44351,https://localhost:443,https://monitordelogs.ocasa.com:443,https://monitordelogs.ocasa.com", headers: "*", methods: "*")]
+    //[EnableCors(origins: "https://localhost:44351,https://localhost:443,https://monitor-dtv.ocasa.com:443,https://monitor-dtv.ocasa.com", headers: "*", methods: "*")]
     public class ListErrorsController : ApiController
     {
-        
         [HttpPost]
         [Route("api/ListErrors")]
         public HttpResponseMessage ListErrors(LogListRequest param)
